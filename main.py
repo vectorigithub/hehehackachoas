@@ -141,6 +141,7 @@ def home():
     
     routes_data = []
     m = get_base_map()
+    form_state = get_empty_form_state()
 
     # NEW: load user settings so we can respect flood/weather toggle prefs
     user_settings = get_user_settings(chDB_perf, session['user'])
