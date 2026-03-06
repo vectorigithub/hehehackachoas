@@ -14,6 +14,16 @@ from condemnation.features import (
     is_nighttime, get_night_banner_html,
 )
 
+# ── NEW: Weather, NOAH, User Data ─────────────────────────────────────────────
+from condemnation.weather import get_weather_risk, get_weather_banner_html, apply_weather_to_routes
+from condemnation.noah import add_noah_flood_layer, get_flood_risk_at, get_flood_warning_html
+from condemnation.user_data import (
+    init_user_tables, get_user_settings, save_user_settings,
+    save_route_history, get_route_history, clear_route_history,
+    get_user_profile, save_user_profile, change_password,
+    extract_settings_from_form, get_settings_page_html, get_history_page_html,
+)
+
 USE_MYSQL = False 
 
 if USE_MYSQL:
@@ -24,6 +34,8 @@ else:
     chDB_perf = nsql()
 
 chDB_perf.init_db()
+init_user_tables(chDB_perf)  # NEW: creates user_settings, route_history, user_profile tables
+
 app = Flask(__name__)
 app.secret_key = 'saferoute_super_secret_key'
 
@@ -102,7 +114,6 @@ def _draw_train_route(route, m):
     for idx, station in enumerate(stations):
         is_terminal = (idx == 0 or idx == len(stations) - 1)
 
-        # Outer ring: larger + filled for terminals, smaller for intermediate
         folium.CircleMarker(
             location=[station['lat'], station['lon']],
             radius=9 if is_terminal else 6,
@@ -132,8 +143,19 @@ def home():
     m = get_base_map()
     form_state = get_empty_form_state()
 
+    # NEW: load user settings so we can respect flood/weather toggle prefs
+    user_settings = get_user_settings(chDB_perf, session['user'])
+
+    # NEW: add NOAH flood layer to the base map (respects user setting)
+    if user_settings.get('show_flood_overlay', True):
+        add_noah_flood_layer(m)
+
+    # NEW: defaults for banners in case it's a GET request
+    weather_banner = ''
+    flood_warning  = ''
+
     if request.method == 'POST':
-        form_state = extract_form_state(request)  # Bug Fix #3: preserve inputs
+        form_state = extract_form_state(request)
         origin_text = form_state['origin']
         dest_text = form_state['destination']
         commuter_type = form_state['commuter_type']
@@ -144,6 +166,25 @@ def home():
         if not orig_lon or not dest_lon:
             flash("Location not found. Please type a specific address.")
         else:
+            # NEW: fetch weather at origin
+            if user_settings.get('show_weather_banner', True):
+                weather      = get_weather_risk(orig_lat, orig_lon)
+                weather_banner = get_weather_banner_html(weather, commuter_type)
+            else:
+                weather = {'ok': False}
+
+            # NEW: check flood risk at origin and destination
+            flood_orig = get_flood_risk_at(orig_lat, orig_lon)
+            flood_dest = get_flood_risk_at(dest_lat, dest_lon)
+            # Only show flood warning if it's actually raining
+            if weather.get('ok') and weather.get('risk_level') in ('rain', 'heavy_rain', 'storm', 'light_rain'):
+                flood_warning = (
+                    get_flood_warning_html(flood_orig, "your starting point") +
+                    get_flood_warning_html(flood_dest, "your destination")
+                )
+            else:
+                flood_warning = ''
+
             nav_response = get_navigation_data(
                 orig_lon, orig_lat, dest_lon, dest_lat, commuter_type, []
             )
@@ -152,6 +193,16 @@ def home():
                 flash(nav_response["error"])
             else:
                 routes_data = nav_response.get("routes", [])
+
+                # NEW: apply weather penalty to route safety scores
+                if weather.get('ok'):
+                    routes_data = apply_weather_to_routes(routes_data, weather, commuter_type)
+
+                # NEW: save this search to history
+                save_route_history(
+                    chDB_perf, session['user'],
+                    origin_text, dest_text, commuter_type, len(routes_data)
+                )
                 
                 # Draw origin/destination markers
                 if routes_data:
@@ -174,7 +225,6 @@ def home():
                     if route.get('type') == 'train':
                         _draw_train_route(route, m)
                     else:
-                        # Standard road route
                         route_layer = folium.FeatureGroup(name=route['name'])
                         folium.PolyLine(
                             locations=route['coords'],
@@ -203,6 +253,8 @@ def home():
         suggest_js=get_suggest_js(),
         typhoon_banner=typhoon_banner,
         night_banner=night_banner,
+        weather_banner=weather_banner,   # NEW
+        flood_warning=flood_warning,     # NEW
     )
 
 
@@ -248,6 +300,66 @@ def logout():
     return redirect(url_for('login'))
 
 
+# ── NEW: Settings route ───────────────────────────────────────────────────────
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    flash_msg = ''
+    if request.method == 'POST':
+        # Handle profile sub-form (display name + email)
+        if 'display_name' in request.form:
+            save_user_profile(
+                chDB_perf, session['user'],
+                request.form.get('display_name', ''),
+                request.form.get('email', ''),
+            )
+        # Handle general settings form
+        if 'default_commuter_type' in request.form:
+            s = extract_settings_from_form(request.form)
+            save_user_settings(chDB_perf, session['user'], s)
+        flash_msg = 'Settings saved.'
+    user_settings = get_user_settings(chDB_perf, session['user'])
+    profile       = get_user_profile(chDB_perf, session['user'])
+    return get_settings_page_html(user_settings, profile, flash_msg)
+
+
+# ── NEW: History routes ───────────────────────────────────────────────────────
+
+@app.route('/history')
+def history():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    hist = get_route_history(chDB_perf, session['user'])
+    return get_history_page_html(hist, session['user'])
+
+
+@app.route('/history/clear', methods=['POST'])
+def history_clear():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    clear_route_history(chDB_perf, session['user'])
+    hist = get_route_history(chDB_perf, session['user'])
+    return get_history_page_html(hist, session['user'], flash_message='History cleared.')
+
+
+# ── NEW: Password change route ────────────────────────────────────────────────
+
+@app.route('/account/password', methods=['POST'])
+def change_password_route():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    result = change_password(
+        chDB_perf, session['user'],
+        request.form.get('old_password', ''),
+        request.form.get('new_password', ''),
+    )
+    user_settings = get_user_settings(chDB_perf, session['user'])
+    profile       = get_user_profile(chDB_perf, session['user'])
+    return get_settings_page_html(user_settings, profile, result['message'])
+
+
 @app.route('/api/suggest', methods=['GET'])
 def suggest_location():
     query = request.args.get('q', '')
@@ -260,7 +372,7 @@ def suggest_location():
     headers = {'User-Agent': 'SafeRoute-Flask-App/1.0'}
     try:
         response = requests.get(url, headers=headers)
-        cleaned = validate_suggest_response(response.json())  # Bug Fix #2
+        cleaned = validate_suggest_response(response.json())
         return jsonify(cleaned)
     except Exception:
         return jsonify([])
@@ -308,9 +420,6 @@ def get_routes():
     if "error" in nav_response:
         return jsonify({"error": nav_response["error"]}), 400
 
-    # Each route now contains:
-    #   coords    -> list of track segments (for polylines)
-    #   stations  -> ordered list of {lat, lon, name} (for station pins)
     return jsonify(nav_response)
 
 

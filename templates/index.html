@@ -10,12 +10,14 @@
 <body>
     {{ typhoon_banner | safe }}
     {{ night_banner | safe }}
+    {{ weather_banner | safe }}
+    <div id="flood-warning-container">{{ flood_warning | safe }}</div>
     <div class="app-container">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="header">
                 <h2>SafeRouteAI</h2>
-                <span class="user-info">Hi, {{ user }} | <a href="/logout">Logout</a></span>
+                <span class="user-info">Hi, {{ user }} | <a href="/settings">Settings</a> | <a href="/history">History</a> | <a href="/logout">Logout</a></span>
             </div>
 
             {% with messages = get_flashed_messages() %}
