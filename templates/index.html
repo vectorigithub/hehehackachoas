@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>SafeRouteAI Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+    {{ typhoon_banner | safe }}
+    {{ night_banner | safe }}
     <div class="app-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -15,39 +19,40 @@
             </div>
 
             {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                {% for message in messages %}
-                  <div class="flash-message">{{ message }}</div>
-                {% endfor %}
-              {% endif %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
             {% endwith %}
 
             <!-- ADDED ID="route-form" HERE 👇 -->
             <form class="controls" method="POST" action="/" id="route-form">
                 <label class="input-label">Starting Location:</label>
                 <div class="input-with-icon">
-                    <input type="text" name="origin" id="origin" placeholder="Type address or Lat, Lon" required>
-                    <button type="button" id="locate-me-btn" title="Use Current Location" onclick="useCurrentLocation('origin')">🎯</button>
+                    <input type="text" name="origin" id="origin" placeholder="Type address or Lat, Lon"
+                        value="{{ form_state.origin }}" required>
+                    <button type="button" id="locate-me-btn" title="Use Current Location"
+                        onclick="useCurrentLocation('origin')">🎯</button>
                 </div>
 
                 <label class="input-label">Destination:</label>
                 <div class="input-with-icon">
-                    <input type="text" name="destination" id="destination" placeholder="Type address or Lat, Lon" required>
-                    <button type="button" id="locate-me-btn" title="Use Current Location" onclick="useCurrentLocation('destination')">🎯</button>
+                    <input type="text" name="destination" id="destination" placeholder="Type address or Lat, Lon"
+                        value="{{ form_state.destination }}" required>
+                    <button type="button" id="locate-me-btn" title="Use Current Location"
+                        onclick="useCurrentLocation('destination')">🎯</button>
                 </div>
-                
+                <input type="hidden" id="origin_lat" name="origin_lat" value="{{ form_state.origin_lat }}">
+                <input type="hidden" id="origin_lon" name="origin_lon" value="{{ form_state.origin_lon }}">
+                <input type="hidden" id="dest_lat" name="dest_lat" value="{{ form_state.dest_lat }}">
+                <input type="hidden" id="dest_lon" name="dest_lon" value="{{ form_state.dest_lon }}">
+
                 <label class="input-label">Commuter Type:</label>
                 <select name="commuterType" id="commuter-type" required>
-                    <optgroup label="Road Transport">
-                        <option value="car">Car</option>
-                        <option value="jeepney">Jeepney</option>
-                        <option value="tricycle">Tricycle</option>
-                    </optgroup>
-                    <optgroup label="Trains (Manual Route)">
-                        <option value="LRT-1">LRT-1 (Green Line)</option>
-                        <option value="LRT-2">LRT-2 (Blue Line)</option>
-                        <option value="MRT-3">MRT-3 (Yellow Line)</option>
-                    </optgroup>
+                    {% for opt in commuter_options %}
+                    <option value="{{ opt.value }}" {{ 'selected' if opt.selected else '' }}>{{ opt.label }}</option>
+                    {% endfor %}
                 </select>
 
                 <button type="submit" class="btn-primary" id="submit-btn">Find Safe Routes</button>
@@ -56,28 +61,43 @@
             <div id="route-results" class="route-results">
                 {% for route in routes %}
                 <div class="route-card" style="border-left-color: {{ route.color }};">
-                    <div class="route-title" style="color: {{ route.color }}">{{ route.name }}</div>
-                    <div class="route-stats">
-                        <span>🕒 {{ route.time }}</span>
-                        <span>📏 {{ route.distance }}</span>
-                    </div>
-                    <div class="route-safety">
-                        Safety Score: {{ route.safety_score }}/100 <br>
-                        Hazard: {{ route.hazards_flagged }}
-                    </div>
-                </div>
+    <div class="route-title" style="color: {{ route.color }}">
+        {{ route.mode_label }} — {{ route.name }}
+    </div>
+    <div class="route-stats">
+        <span>🕒 {{ route.time }}</span>
+        <span>📏 {{ route.distance }}</span>
+    </div>
+    <div class="route-safety" style="color: {{ route.score_color }}">
+        {{ route.score_label }} ({{ route.safety_score }}/100)
+    </div>
+    {% if route.fare %}
+    <div class="route-fare">
+        💸 Est. Fare: {{ route.fare.display }}
+        <span class="fare-note">{{ route.fare.note }}</span>
+    </div>
+    {% endif %}
+    {% if route.night_warning %}
+    <div class="route-night-warning">
+        {{ route.night_warning }}
+    </div>
+    {% endif %}
+</div>
                 {% endfor %}
             </div>
         </div>
-        
+
+
         <!-- Map Container -->
         <div class="map-area">
             <div class="map-overlay-controls">
-                <button type="button" id="pinpoint-btn" title="Toggle Pinpoint Mode" onclick="togglePinpoint()">📍</button>
+                <button type="button" id="pinpoint-btn" title="Toggle Pinpoint Mode"
+                    onclick="togglePinpoint()">📍</button>
                 <div id="pick-status" class="pick-status-label">Pinpoint Mode ON</div>
             </div>
 
-            <iframe id="map-frame" srcdoc="{{ map_html | escape }}" width="100%" height="100%" style="border:none;"></iframe>
+            <iframe id="map-frame" srcdoc="{{ map_html | escape }}" width="100%" height="100%"
+                style="border:none;"></iframe>
         </div>
     </div>
 
@@ -95,7 +115,7 @@
                 const btn = document.getElementById('submit-btn');
                 btn.innerText = "Auto-calculating..."; // Visual feedback
                 btn.disabled = true;
-                
+
                 // Submit the form programmatically
                 document.getElementById('route-form').submit();
             }
@@ -108,10 +128,10 @@
 
             if (!originVal || originVal.trim() === "") {
                 statusLabel.innerText = "📍 Click map to set START (Green)";
-                statusLabel.style.background = "#27ae60"; 
+                statusLabel.style.background = "#27ae60";
             } else {
                 statusLabel.innerText = "📍 Click map to set DESTINATION (Red)";
-                statusLabel.style.background = "#c0392b"; 
+                statusLabel.style.background = "#c0392b";
             }
         }
 
@@ -119,7 +139,7 @@
             isPinpointing = !isPinpointing;
             const btn = document.getElementById("pinpoint-btn");
             const status = document.getElementById("pick-status");
-            
+
             if (isPinpointing) {
                 btn.classList.add("active");
                 status.style.display = "block";
@@ -137,32 +157,32 @@
                     type: 'draw_marker',
                     lat: lat,
                     lng: lng,
-                    kind: kind 
+                    kind: kind
                 }, '*');
             }
         }
 
-        window.addEventListener("message", function(event) {
+        window.addEventListener("message", function (event) {
             if (event.data && event.data.type === 'map_click' && isPinpointing) {
                 const lat = event.data.lat;
                 const lng = event.data.lng;
                 const coordString = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                
+
                 const originBox = document.getElementById('origin');
                 const destBox = document.getElementById('destination');
 
                 if (!originBox.value || originBox.value.trim() === "") {
                     originBox.value = coordString;
                     sendDrawCommand(lat, lng, 'origin');
-                    updatePinpointStatus(); 
-                    
+                    updatePinpointStatus();
+
                     // Check if Destination was somehow already filled, if so, submit!
                     checkAndAutoSubmit();
                 } else {
                     destBox.value = coordString;
                     sendDrawCommand(lat, lng, 'destination');
                     togglePinpoint();
-                    
+
                     // --- TRIGGER AUTO SUBMIT HERE ---
                     checkAndAutoSubmit();
                 }
@@ -173,13 +193,13 @@
             if (!navigator.geolocation) return alert("Geolocation not supported.");
             const box = document.getElementById(targetInputId);
             box.value = "Locating...";
-            
+
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
                     box.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                    
+
                     // If we are in pinpoint mode, update the status text
                     if (isPinpointing) updatePinpointStatus();
 
@@ -190,7 +210,7 @@
                     // --- TRIGGER AUTO SUBMIT HERE ---
                     // If I used GPS for one, and the other is already full, go!
                     checkAndAutoSubmit();
-                }, 
+                },
                 (err) => {
                     box.value = "";
                     alert("Could not retrieve location.");
@@ -198,5 +218,7 @@
             );
         }
     </script>
+    <script>{{ suggest_js | safe }}</script>
 </body>
+
 </html>

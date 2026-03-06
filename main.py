@@ -6,6 +6,14 @@ from folium import plugins
 import requests
 import folium
 
+# ── Bug fixes from condemnation/ ─────────────────────────────────────────────
+from condemnation.autocomplete import validate_suggest_response, get_suggest_js
+from condemnation.form_state import extract_form_state, get_empty_form_state, get_commuter_options
+from condemnation.features import (
+    get_typhoon_signal, get_banner_html,
+    is_nighttime, get_night_banner_html,
+)
+
 USE_MYSQL = False 
 
 if USE_MYSQL:
@@ -122,11 +130,13 @@ def home():
     
     routes_data = []
     m = get_base_map()
+    form_state = get_empty_form_state()
 
     if request.method == 'POST':
-        origin_text = request.form.get('origin')
-        dest_text = request.form.get('destination')
-        commuter_type = request.form.get('commuterType')
+        form_state = extract_form_state(request)  # Bug Fix #3: preserve inputs
+        origin_text = form_state['origin']
+        dest_text = form_state['destination']
+        commuter_type = form_state['commuter_type']
 
         orig_lon, orig_lat = geocode_location(origin_text)
         dest_lon, dest_lat = geocode_location(dest_text)
@@ -179,7 +189,21 @@ def home():
                     folium.LayerControl().add_to(m)
 
     map_html = m.get_root().render()
-    return render_template('index.html', user=session['user'], map_html=map_html, routes=routes_data)
+    typhoon        = get_typhoon_signal()
+    typhoon_banner = get_banner_html(typhoon)
+    commuter_type  = form_state.get('commuter_type', '')
+    night_banner   = get_night_banner_html(commuter_type)
+    return render_template(
+        'index.html',
+        user=session['user'],
+        map_html=map_html,
+        routes=routes_data,
+        form_state=form_state,
+        commuter_options=get_commuter_options(form_state['commuter_type']),
+        suggest_js=get_suggest_js(),
+        typhoon_banner=typhoon_banner,
+        night_banner=night_banner,
+    )
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -236,7 +260,8 @@ def suggest_location():
     headers = {'User-Agent': 'SafeRoute-Flask-App/1.0'}
     try:
         response = requests.get(url, headers=headers)
-        return jsonify(response.json())
+        cleaned = validate_suggest_response(response.json())  # Bug Fix #2
+        return jsonify(cleaned)
     except Exception:
         return jsonify([])
 

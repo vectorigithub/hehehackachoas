@@ -1,0 +1,41 @@
+List of problems:
+1. the path/route for some commuter types aren't correct. For example for tricycle it goes to nlex even though cars are only allowed on there or it doesn't really go to the safest route. It doesn't count if that location is one way or it's strictly for cars or whatever
+2. No suggestions when typing in locations. Usually when you type it'll show some locations and you can just click
+3. Once find safe route is clicked everything I entered is gone. 
+
+Need adjustments:
+1. Separate commuter types when most can be clustered (commute, walk, motorcycle, and car)
+2. It doesn't find the safest and fastest route at all the routes are messed up. And it's probably because the data are not yet included like traffics and floods etc. and should also consider the time like if its at night or morning
+3. No user feedback as of now to like give accurate data whether that place is safe at night
+4. Debug literally everything
+
+
+**btw we're on python again no js, but if js is generated it's fine, just not outside of the python file.** 
+1. create a folder named condemnation or wtv. just one folder to commit everything u made.
+2. features to work with:
+	1. Live Weather Risk
+	2. NOAH Flood Zone Overlay
+	3. user data settings, history, account settings and general settings.
+3.  apis to work with:
+	1. [open-meteo](https://open-meteo.com/)
+		- i think.
+---
+in order to achieve this, one must submit every file to the llm to understand it's codebase. then ask it to generate codebase **WITHOUT** tampering the current codebase. the submitted codebase are not to be modified, and new files should be kept in a folder instead. *name it anything? i dont know.* 
+
+prevent it from modifying the codebases even if there r any errors or wtv including the `requirements.txt`.
+
+this is to prevent stuff from conflicting with other's work. lol. by creating these codebases, one must track the modules that will be added by the program or llm or ai (in corporate term) like this:
+```requirements.txt
+# --- existing modules ---
+
+# new modules to add.
+<module name>
+```
+---
+since im demanding not to modify the codebase, **please code those thingies by only exposing the functions. like functions without ever it running.**
+
+**make a copy of the latest commit to another folder outside of the git repo. (in ur hard drive not the actual github repository) that way u can connect the program to your newly created shit.**
+
+yk what, u can modify, but dont let it change the codebase, only make the program utilize it. but the functions and all the core thingies must be put into those files inside the folder ure gonna code. wow lots of words!
+
+**ill give a green light once i checked the code, tmr or idk.**
