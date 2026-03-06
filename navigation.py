@@ -1,9 +1,5 @@
 import requests
 import time
-from condemnation.routing_profiles import fetch_ors_routes, is_train_type, get_route_colors
-from condemnation.features import rank_routes, enrich_routes_with_scores, attach_fares
-from condemnation.routing_profiles import fetch_ors_routes, is_train_type, get_route_colors
-from condemnation.features import rank_routes, enrich_routes_with_scores, attach_fares, apply_night_safety
 
 # ── Overpass retry ────────────────────────────────────────────────────────────
 
@@ -295,7 +291,10 @@ out geom;
 # ── Public API ────────────────────────────────────────────────────────────────
 
 def get_navigation_data(orig_lon, orig_lat, dest_lon, dest_lat, commuter_type, flood_zones):
-    if is_train_type(commuter_type):  # Bug Fix #1: replaces inline any(x in ...) check
+    is_train = any(x in commuter_type.lower()
+                   for x in ["train", "lrt", "mrt", "pnr", "rail", "line"])
+
+    if is_train:
         result = get_osm_railway_geometry(
             commuter_type, orig_lat, orig_lon, dest_lat, dest_lon
         )
@@ -316,38 +315,36 @@ def get_navigation_data(orig_lon, orig_lat, dest_lon, dest_lat, commuter_type, f
             "safety_score": 95,
             "hazards_flagged": "Clear",
         }]
-        # road section (just before return):
-        routes = rank_routes(routes, commuter_type)
-        routes = enrich_routes_with_scores(routes)
-        routes = attach_fares(routes, commuter_type)
         return {"routes": routes}
 
-    # ── Road routing via OpenRouteService ────────────────────────────────────
-    ors_result = fetch_ors_routes(orig_lon, orig_lat, dest_lon, dest_lat, commuter_type)
-    if "error" in ors_result:
-        return {"error": ors_result["error"]}
+    # ── Road routing via OSRM ─────────────────────────────────────────────────
+    osrm = (
+        f"https://router.project-osrm.org/route/v1/driving/"
+        f"{orig_lon},{orig_lat};{dest_lon},{dest_lat}"
+        f"?overview=full&geometries=geojson&alternatives=true&steps=true"
+    )
+    try:
+        r = requests.get(osrm, headers={'User-Agent': 'SafeRouteAI'}, timeout=10).json()
+        if r.get("code") != "Ok":
+            return {"error": "Could not calculate road route."}
+    except Exception:
+        return {"error": "Routing server is currently unavailable."}
 
-    colors = get_route_colors(commuter_type)
+    colors = ["#3498db", "#f1c40f", "#2ecc71"]
     routes = []
-    for i, r in enumerate(ors_result["routes"]):
-        duration_mins = int(r["duration"] / 60)
-        distance_km   = round(r["distance"], 1)
+    for i, route in enumerate(r.get("routes", [])[:3]):
+        coords = [[pt[1], pt[0]] for pt in route["geometry"]["coordinates"]]
         routes.append({
-            "id":              i,
-            "name":            f"Route {i+1}",
-            "type":            "road",
-            "color":           colors[i] if i < len(colors) else colors[-1],
-            "time":            f"{duration_mins} mins",
-            "distance":        f"{distance_km} km",
-            "coords":          r["coords"],
-            "stations":        [],
-            "safety_score":    80,
+            "id": i,
+            "name": f"Route {i+1} (Road)",
+            "type": "road",
+            "color": colors[i],
+            "time": f"{int(route['duration'] / 60)} mins",
+            "distance": f"{round(route['distance'] / 1000, 1)} km",
+            "coords": coords,
+            "stations": [],
+            "safety_score": 80,
             "hazards_flagged": "Clear",
         })
 
-    # road section (just before return):
-    routes = rank_routes(routes, commuter_type)
-    routes = enrich_routes_with_scores(routes)
-    routes = attach_fares(routes, commuter_type)
-    routes = apply_night_safety(routes, commuter_type)
     return {"routes": routes}

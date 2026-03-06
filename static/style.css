@@ -94,24 +94,3 @@ select#commuter-type:focus {
     border-color: #2980b9;
     box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
 }
-
-/* Typhoon banner pushes content down */
-.app-container { margin-top: 0; transition: margin-top 0.3s; }
-body.has-banner .app-container { margin-top: 38px; }
-
-/* Fare display */
-.route-fare {
-    font-size: 13px;
-    margin-top: 6px;
-    color: #27ae60;
-    font-weight: bold;
-}
-.fare-note {
-    font-size: 11px;
-    color: #7f8c8d;
-    font-weight: normal;
-    display: block;
-}
-
-/* Night mode base */
-body.night-mode { background-color: #1a1a2e; color: #e0e0e0; }
