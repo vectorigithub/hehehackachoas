@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safety Score Explanation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "navy": "#0A192F",
+                        "navy-light": "#112240",
+                        "primary": "#0A192F",
+                        "background-light": "#F8FAFC",
+                        "success": "#059669",
+                        "warning": "#D97706",
+                        "danger": "#DC2626",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-display bg-slate-200;
+            }
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-navy">
+<div class="fixed top-0 left-0 w-full h-12 bg-transparent z-50 flex items-center justify-between px-6">
+<span class="text-sm font-semibold">9:41</span>
+<div class="flex gap-1.5 items-center text-navy">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="material-symbols-outlined text-[18px]">battery_full</span>
+</div>
+</div>
+<div class="relative h-screen w-full bg-slate-200 overflow-hidden">
+<div class="absolute inset-0">
+<img alt="Map Area" class="w-full h-full object-cover grayscale-[0.5]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBit-WGo8ZYZ7Nl9Iaj3sXPV7x2r8BWcs2OG2tfJ15W86qOY3xi___eYvoOSarHIBasGy2hKIg2UCsFqVdcgPHVpZ9ROttLO2JaBlLLr36W8biu-J5uH_4C_7KPY12ovxrhbCkUl1Q3W44BrGfu5i9nrscfMDiGXhv6b-5lxLhXoHa0oUU8LkUcNGxzCVXw0AU30dGMgB_5ZY-nezoIgZ9KSJx5f-yf2yMAcIG2dMhD2SB4eCyDCFsyN6cQ62fKC8gf1g9GSbRPKDw"/>
+</div>
+<div class="absolute inset-0 bg-navy/20 flex flex-col justify-end">
+<div class="flex flex-col items-stretch bg-white rounded-t-[40px] shadow-2xl overflow-hidden">
+<div class="flex h-10 w-full items-center justify-center">
+<div class="h-1.5 w-10 rounded-full bg-slate-200"></div>
+</div>
+<div class="px-6 pb-10 overflow-y-auto max-h-[85vh]">
+<div class="flex justify-between items-center mb-8">
+<div class="space-y-1">
+<h2 class="text-2xl font-bold tracking-tight text-navy">Safety Analysis</h2>
+<div class="flex items-center gap-2 text-slate-500 text-xs font-medium uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Ayala Avenue, Makati
+                        </div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] font-bold text-slate-400 uppercase">Live Index</span>
+<span class="text-xs font-bold text-success">Updated Now</span>
+</div>
+</div>
+<div class="bg-white border border-slate-100 rounded-3xl p-6 mb-8 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-[0.1em]">Safety Score</p>
+<div class="flex items-baseline gap-1">
+<span class="text-5xl font-black text-navy">85</span>
+<span class="text-slate-300 font-bold text-xl">/100</span>
+</div>
+</div>
+<div class="text-right">
+<div class="bg-success/10 text-success px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> 
+                                +1.2
+                            </div>
+</div>
+</div>
+<div class="relative h-4 w-full bg-slate-100 rounded-full overflow-hidden mb-2">
+<div class="absolute top-0 left-0 h-full bg-navy rounded-full" style="width: 85%"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+<span>Low Security</span>
+<span>Standard</span>
+<span>Highly Secure</span>
+</div>
+</div>
+<div class="space-y-6">
+<h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest px-1">Factor Breakdown</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 text-navy">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="text-sm font-bold text-navy">Crime Incidents</span>
+<span class="text-sm font-bold text-navy">92%</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full">
+<div class="h-full bg-navy rounded-full" style="width: 92%"></div>
+</div>
+</div>
+</div>
+<p class="text-xs text-slate-500 pl-14">No active threats reported in 2km radius. High patrol presence confirmed.</p>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 text-navy">
+<span class="material-symbols-outlined text-xl">flood</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="text-sm font-bold text-navy">Water Level Index</span>
+<span class="text-sm font-bold text-navy">78%</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full">
+<div class="h-full bg-navy rounded-full" style="width: 78%"></div>
+</div>
+</div>
+</div>
+<p class="text-xs text-slate-500 pl-14">Minor gutter-level pooling in Legazpi Village. Passage is clear for all vehicles.</p>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 text-navy">
+<span class="material-symbols-outlined text-xl">groups</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="text-sm font-bold text-navy">Community Rating</span>
+<span class="text-sm font-bold text-navy">85%</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full">
+<div class="h-full bg-navy rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<div class="ml-14 flex items-center justify-between bg-slate-50 rounded-2xl p-3 border border-slate-100">
+<p class="text-xs font-semibold text-navy">Current Status: Safe?</p>
+<button class="bg-navy text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest active:scale-95 transition-transform">
+                                Report Ligtas
+                            </button>
+</div>
+</div>
+</div>
+<div class="mt-10 space-y-3">
+<button class="w-full bg-navy text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-navy/20">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+                        View Detailed Hazard Map
+                    </button>
+<button class="w-full bg-white border-2 border-slate-100 text-slate-500 py-4 rounded-2xl font-bold text-sm">
+                        Dismiss
+                    </button>
+</div>
+<div class="flex items-center justify-center mt-6 gap-2 py-2">
+<div class="relative flex items-center justify-center">
+<div class="absolute w-3 h-3 bg-success rounded-full opacity-30 animate-ping"></div>
+<div class="w-1.5 h-1.5 bg-success rounded-full"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">DOST-PAGASA Data Integrated</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute top-16 right-4 flex flex-col gap-3">
+<button class="w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center text-navy border border-slate-100">
+<span class="material-symbols-outlined font-light">my_location</span>
+</button>
+<button class="w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center text-danger border border-slate-100">
+<span class="material-symbols-outlined font-light">sos</span>
+</button>
+</div>
+</div>
+<div class="fixed bottom-1.5 left-1/2 -translate-x-1/2 w-36 h-1.5 bg-slate-900/10 rounded-full z-[60]"></div>
+
+</body></html>

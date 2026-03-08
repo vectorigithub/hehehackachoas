@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Community &amp; Disaster Reports</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ecec",
+                        "background-light": "#f6f8f8",
+                        "background-dark": "#102222",
+                        "neutral-800": "#1a3333",
+                        "neutral-700": "#234848",
+                        "neutral-600": "#2d5d5d",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-slate-200 dark:border-neutral-700">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-neutral-800">
+<span class="material-symbols-outlined text-slate-900 dark:text-primary">menu</span>
+</div>
+<div class="flex flex-col items-center">
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Safety Feed</h1>
+<p class="text-xs text-slate-500 dark:text-primary/70 font-medium uppercase tracking-wider">Metro Manila</p>
+</div>
+<div class="flex size-10 items-center justify-end">
+<button class="relative flex items-center justify-center rounded-full bg-slate-100 dark:bg-neutral-800 p-2">
+<span class="material-symbols-outlined text-slate-900 dark:text-white">notifications</span>
+<span class="absolute top-1 right-1 flex h-2 w-2 rounded-full bg-red-500"></span>
+</button>
+</div>
+</header>
+<main class="flex-1 pb-24">
+<!-- Weather Forecast Widget -->
+<section class="p-4">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-neutral-800 to-background-dark p-5 border border-neutral-700 shadow-xl">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-4xl text-primary">rainy</span>
+<div>
+<p class="text-2xl font-bold text-white leading-tight">Heavy Rain</p>
+<p class="text-sm text-slate-400">Flood Warning Active</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-3xl font-light text-white">24°C</p>
+<p class="text-xs text-primary font-medium">Feels like 26°</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary py-2 text-sm font-bold text-background-dark">
+<span class="material-symbols-outlined text-sm">map</span>
+                            View Map
+                        </button>
+<button class="flex items-center justify-center rounded-lg bg-neutral-700 px-4 py-2 text-sm font-medium text-white border border-neutral-600">
+                            Details
+                        </button>
+</div>
+</div>
+</section>
+<!-- Quick Alert Categories -->
+<section class="flex gap-3 overflow-x-auto px-4 pb-4 no-scrollbar">
+<div class="flex min-w-[120px] flex-col gap-2 rounded-xl p-4 bg-red-500/10 border border-red-500/20">
+<span class="material-symbols-outlined text-red-500">water_damage</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium">Flood</p>
+<p class="text-red-500 text-lg font-bold leading-tight">High</p>
+</div>
+<div class="flex min-w-[120px] flex-col gap-2 rounded-xl p-4 bg-orange-500/10 border border-orange-500/20">
+<span class="material-symbols-outlined text-orange-500">cyclone</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium">Typhoon</p>
+<p class="text-orange-500 text-lg font-bold leading-tight">Active</p>
+</div>
+<div class="flex min-w-[120px] flex-col gap-2 rounded-xl p-4 bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary">security</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium">Crime</p>
+<p class="text-primary text-lg font-bold leading-tight">Low</p>
+</div>
+<div class="flex min-w-[120px] flex-col gap-2 rounded-xl p-4 bg-yellow-500/10 border border-yellow-500/20">
+<span class="material-symbols-outlined text-yellow-500">traffic</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium">Traffic</p>
+<p class="text-yellow-500 text-lg font-bold leading-tight">Heavy</p>
+</div>
+</section>
+<!-- Community Feed -->
+<section class="px-4">
+<div class="flex items-center justify-between py-4">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">Community Reports</h3>
+<button class="text-primary text-sm font-medium">Recent First</button>
+</div>
+<div class="space-y-6">
+<!-- Report Card 1 -->
+<div class="flex flex-col gap-3 rounded-xl bg-white dark:bg-neutral-800 p-4 shadow-sm border border-slate-100 dark:border-neutral-700">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-neutral-700 overflow-hidden">
+<img alt="User avatar" data-alt="Avatar of a male app user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLQ_jV4CvrSC2GKnOqrKOOajBxAAd8G7bAKwapH_cSCV5vQQtAzzVJlNOy6ZMihs-XYvOMX44JPoeXnTCNEc7KoeDePWcJ5zwSza3zBmE3SeTNPYMkOO1HDaESPDG8EOC1w93SyhsjjaoRxCSl-ofF2S1TuJBSvScW3NUaKbi-IacKEC2M7n56dJEvLUzdyqB6hbIdzxXJ3lb5ojUjYlqxVG-svJsXliQPKQSYpzXk7vX_RUiEjIAugwrcXN8PCvmysFyvyB1INQE"/>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Juan Dela Cruz</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">5 mins ago • Pasay City</p>
+</div>
+</div>
+<span class="rounded-full bg-red-500/20 px-2 py-1 text-[10px] font-bold uppercase text-red-500 tracking-wider">Flood Watch</span>
+</div>
+<p class="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                            Knee-deep flooding along Taft Avenue near DLSU. Vehicles are advised to take alternate routes.
+                        </p>
+<div class="relative aspect-video w-full overflow-hidden rounded-lg bg-neutral-700">
+<img alt="Flooded street report" class="h-full w-full object-cover" data-alt="A flooded urban street with cars navigating water" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMkhwK3y3tRdFf-ivZt_ymu_9P92NRVaVMpK5jmzHbu9JTsO2geY97DX0lwH7iXF5mD5PTYmTAmRo2K6MGXIFVXwNE70QxE-C9Y1wvcfg17FWV1U0mNP0v2vc-rvVHyv_X1pNBGJWrrCQLpM8bN2C5TQ6xCNBq7LrvtEX3JvWQGdMvW5LDdDzdqEBAuhrjNq4irxS4UlEZ3FGEkGyYH0ADUckcLYonv_yYGJx5M55Rielc9vQzTCUqNGeZQUtfiPRXDLpYZjx2q8U"/>
+<div class="absolute bottom-3 right-3 rounded-lg bg-black/60 px-2 py-1 text-white text-[10px] backdrop-blur-sm">
+                                GPS Verified
+                            </div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-neutral-700">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-primary group">
+<span class="material-symbols-outlined text-[20px] font-bold">keyboard_double_arrow_up</span>
+<span class="text-xs font-bold uppercase tracking-widest">Verify (124)</span>
+</button>
+<button class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span class="text-xs font-bold">12</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</div>
+<!-- Report Card 2 -->
+<div class="flex flex-col gap-3 rounded-xl bg-white dark:bg-neutral-800 p-4 shadow-sm border border-slate-100 dark:border-neutral-700">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-neutral-700 overflow-hidden">
+<img alt="User avatar" data-alt="Avatar of a female app user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi6Cw9q9Tk8v4vUeBCQ21cVYm56oin8PHl-0d3PExbOCpa1mbyUADb9B9J-FNj2yAd7f39j7nryDuEIGEgVBV0upopZ1xEQmJyfpiksyUQkRKmOXxOd8kiUs3M_JH79H3g8Hxn3xxBg2KotadGHbHIr9OaPxi5yqEIPxzAKlS1ePOP1ukjP8OA6-V2m0EzTDuXCe7EHkzqooQyVQuwhYaJ4oYSa2Zdwr3zkV-qIRuWo7vtGWD4CjA1fzpHyIsMIvB4hxRneMazGLA"/>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Maria Santos</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">15 mins ago • Makati CBD</p>
+</div>
+</div>
+<span class="rounded-full bg-yellow-500/20 px-2 py-1 text-[10px] font-bold uppercase text-yellow-600 tracking-wider">Heavy Traffic</span>
+</div>
+<p class="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                            Stalled truck at EDSA-Ayala intersection. Traffic is backed up to Buendia.
+                        </p>
+<div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-neutral-700">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_up</span>
+<span class="text-xs font-bold uppercase tracking-widest">Verify (45)</span>
+</button>
+<button class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span class="text-xs font-bold">5</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button for Report -->
+<button class="fixed bottom-24 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/20 text-background-dark">
+<span class="material-symbols-outlined text-3xl font-bold">add_a_photo</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-700 bg-background-dark/95 backdrop-blur-md px-4 pb-6 pt-2">
+<div class="flex gap-2 justify-between max-w-md mx-auto">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium leading-normal">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">warning</span>
+<p class="text-[10px] font-medium leading-normal">Reports</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">map</span>
+<p class="text-[10px] font-medium leading-normal">Routes</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<p class="text-[10px] font-medium leading-normal">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Explore Mode Map</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                        "surface-dark": "#1a2432",
+                        "border-dark": "#2a374a"
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-hidden h-screen flex flex-col">
+<div class="relative flex flex-1 w-full flex-col overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="Interactive map of Metro Manila showing street grid" data-location="Metro Manila, Philippines" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXowzeUGzae_0DtwbfHMW5MTvwyahq05RNXnfO0lFBPRgOX2S2Bp_A_vFhiEPcTkyAc6Vf4r3HKmgFGU3p3qEIBUNJ9nIGrV-KLdz3s8UOTa0okRHfE-i_-NvyGdtdeCHs9XlwGufxqnJK-gPYU7eDTAVlOKpP5S_SLuxEMoNuGsdjU--sX9NSNwFQiO8XBDp9t8vE95vg9psEu-5qmZE0eiyyNfkon9chIdCl7b9r2gJva8dGdZ-UkEusLeQuxvW8d3_HVJH2LmU');"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-background-dark/40 via-transparent to-background-dark/60 pointer-events-none"></div>
+</div>
+<div class="relative z-10 px-4 pt-12 pb-4">
+<div class="flex items-center gap-3">
+<div class="flex-1">
+<label class="flex flex-col w-full h-12">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-lg overflow-hidden">
+<div class="text-slate-400 flex border-none bg-surface-dark items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-surface-dark text-slate-100 focus:outline-0 focus:ring-0 h-full placeholder:text-slate-500 px-4 pl-2 text-base font-normal" placeholder="Input destination" value=""/>
+<div class="text-primary flex border-none bg-surface-dark items-center justify-center pr-4">
+<span class="material-symbols-outlined">mic</span>
+</div>
+</div>
+</label>
+</div>
+<button class="flex size-12 items-center justify-center rounded-xl bg-surface-dark shadow-lg border border-border-dark">
+<span class="material-symbols-outlined text-slate-100">person</span>
+</button>
+</div>
+<div class="flex gap-2 py-4 overflow-x-auto no-scrollbar">
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-4 shadow-md">
+<span class="material-symbols-outlined text-white text-[20px]">shield</span>
+<p class="text-white text-sm font-semibold">Safe Routes</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-surface-dark px-4 shadow-md border border-border-dark">
+<span class="material-symbols-outlined text-slate-200 text-[20px]">tsunami</span>
+<p class="text-slate-200 text-sm font-medium">Flood Map</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-surface-dark px-4 shadow-md border border-border-dark">
+<span class="material-symbols-outlined text-slate-200 text-[20px]">directions_bus</span>
+<p class="text-slate-200 text-sm font-medium">Jeepney</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-surface-dark px-4 shadow-md border border-border-dark">
+<span class="material-symbols-outlined text-slate-200 text-[20px]">train</span>
+<p class="text-slate-200 text-sm font-medium">MRT/LRT</p>
+</div>
+</div>
+</div>
+<div class="absolute right-4 top-1/2 -translate-y-32 flex flex-col gap-3 z-10">
+<button class="flex size-12 items-center justify-center rounded-xl bg-surface-dark shadow-lg border border-border-dark">
+<span class="material-symbols-outlined text-slate-100">layers</span>
+</button>
+<div class="flex flex-col rounded-xl bg-surface-dark shadow-lg border border-border-dark overflow-hidden">
+<button class="flex size-12 items-center justify-center border-b border-border-dark">
+<span class="material-symbols-outlined text-slate-100">add</span>
+</button>
+<button class="flex size-12 items-center justify-center">
+<span class="material-symbols-outlined text-slate-100">remove</span>
+</button>
+</div>
+<button class="flex size-12 items-center justify-center rounded-xl bg-primary shadow-lg">
+<span class="material-symbols-outlined text-white">near_me</span>
+</button>
+</div>
+<div class="mt-auto relative z-20">
+<div class="bg-surface-dark rounded-t-3xl border-t border-border-dark shadow-2xl px-4 pt-3 pb-6">
+<div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-6"></div>
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="text-lg font-bold text-slate-100">Suggested Route</h3>
+<p class="text-sm text-slate-400">To: BGC Arts Center, Taguig</p>
+</div>
+<div class="bg-primary/20 text-primary px-3 py-1 rounded-lg text-sm font-bold">
+                        FASTEST
+                    </div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-background-dark border border-border-dark">
+<div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">directions_transit</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="font-bold text-slate-100">MRT-3 + BGC Bus</p>
+<p class="font-bold text-slate-100">₱42.00</p>
+</div>
+<div class="flex justify-between items-end">
+<p class="text-sm text-slate-400">Via EDSA-Ayala</p>
+<p class="text-sm font-medium text-emerald-400">45 mins</p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-surface-dark/50 border border-border-dark/50">
+<div class="size-12 rounded-xl bg-slate-700/30 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-3xl">directions_car</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="font-bold text-slate-300">Grab / Taxi</p>
+<p class="font-bold text-slate-300">~₱280.00</p>
+</div>
+<div class="flex justify-between items-end">
+<p class="text-sm text-slate-500">Moderate traffic</p>
+<p class="text-sm font-medium text-slate-400">32 mins</p>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl mt-6 transition-colors shadow-lg shadow-primary/20">
+                    Start Navigation
+                </button>
+</div>
+</div>
+<div class="bg-surface-dark border-t border-border-dark px-2 pb-8 pt-2 flex justify-around items-center z-30">
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">explore</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Explore</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Report</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">History</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Options</span>
+</a>
+</div>
+</div>
+</body></html>
