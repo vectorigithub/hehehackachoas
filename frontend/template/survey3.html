@@ -73,35 +73,35 @@
   <div class="flex flex-col gap-3 p-4">
     <div class="flex gap-6 justify-between items-end">
       <div>
-        <p id="progress-step" class="text-primary text-xs font-bold uppercase tracking-wider">Step 2 of 4</p>
-        <p id="progress-percent" class="text-slate-900 dark:text-white text-base font-bold leading-normal">25% COMPLETE</p>
+        <p id="progress-step" class="text-primary text-xs font-bold uppercase tracking-wider">Step 3 of 4</p>
+        <p id="progress-percent" class="text-slate-900 dark:text-white text-base font-bold leading-normal">50% COMPLETE</p>
       </div>
     </div>
     <div class="rounded-full bg-slate-200 dark:bg-slate-800 h-2.5 overflow-hidden">
-      <div id="progress-bar" class="h-full rounded-full bg-primary" style="width: 25%;"></div>
+      <div id="progress-bar" class="h-full rounded-full bg-primary" style="width: 50%;"></div>
     </div>
   </div>
 
   <!-- Header Section -->
   <div class="px-4 pt-6 pb-2">
-    <h2 class="text-slate-900 dark:text-white tracking-tight text-3xl font-extrabold leading-tight text-left pb-3">How do you commute?</h2>
+    <h2 class="text-slate-900 dark:text-white tracking-tight text-3xl font-extrabold leading-tight text-left pb-3">When do you usually commute?</h2>
     <p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-relaxed">
-      Select all the transport modes you regularly use. We'll tailor alerts and routes for each one.
+      This helps us send you timely alerts based on your typical commuting schedule.
     </p>
   </div>
 
   <!-- Selection List -->
   <div class="flex flex-col gap-2 p-4">
 
-    <!-- Option: Jeepney -->
+    <!-- Option: Early Morning -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">airport_shuttle</span>
+          <span class="material-symbols-outlined text-2xl">bedtime</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Jeepney</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Route updates & fare alerts</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Early Morning</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Before 6:00 AM</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -112,15 +112,15 @@
       </div>
     </div>
 
-    <!-- Option: Bus -->
+    <!-- Option: Morning Rush -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">directions_bus</span>
+          <span class="material-symbols-outlined text-2xl">wb_sunny</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Bus</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">EDSA & P2P bus tracking</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Morning Rush</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">6:00 AM – 9:00 AM</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -131,15 +131,15 @@
       </div>
     </div>
 
-    <!-- Option: MRT/LRT -->
+    <!-- Option: Midday -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">train</span>
+          <span class="material-symbols-outlined text-2xl">light_mode</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">MRT / LRT</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Train schedules & disruptions</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Midday / Afternoon</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">9:00 AM – 5:00 PM</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -150,15 +150,15 @@
       </div>
     </div>
 
-    <!-- Option: Tricycle -->
+    <!-- Option: Evening Rush -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">electric_rickshaw</span>
+          <span class="material-symbols-outlined text-2xl">partly_cloudy_night</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Tricycle / Trike</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Local route & boundary alerts</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Evening Rush</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">5:00 PM – 9:00 PM</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -169,15 +169,15 @@
       </div>
     </div>
 
-    <!-- Option: Walking -->
+    <!-- Option: Late Night -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">directions_walk</span>
+          <span class="material-symbols-outlined text-2xl">nightlight</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Walking</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Safe pedestrian paths & crossings</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Late Night</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">After 9:00 PM</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -201,5 +201,5 @@
   </div>
 
 </div>
-<script src="survey2.js"></script>
+<script src="../../survey3.js"></script>
 </body></html>

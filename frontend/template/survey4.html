@@ -73,35 +73,35 @@
   <div class="flex flex-col gap-3 p-4">
     <div class="flex gap-6 justify-between items-end">
       <div>
-        <p id="progress-step" class="text-primary text-xs font-bold uppercase tracking-wider">Step 3 of 4</p>
-        <p id="progress-percent" class="text-slate-900 dark:text-white text-base font-bold leading-normal">50% COMPLETE</p>
+        <p id="progress-step" class="text-primary text-xs font-bold uppercase tracking-wider">Step 4 of 4</p>
+        <p id="progress-percent" class="text-slate-900 dark:text-white text-base font-bold leading-normal">75% COMPLETE</p>
       </div>
     </div>
     <div class="rounded-full bg-slate-200 dark:bg-slate-800 h-2.5 overflow-hidden">
-      <div id="progress-bar" class="h-full rounded-full bg-primary" style="width: 50%;"></div>
+      <div id="progress-bar" class="h-full rounded-full bg-primary" style="width: 75%;"></div>
     </div>
   </div>
 
   <!-- Header Section -->
   <div class="px-4 pt-6 pb-2">
-    <h2 class="text-slate-900 dark:text-white tracking-tight text-3xl font-extrabold leading-tight text-left pb-3">When do you usually commute?</h2>
+    <h2 class="text-slate-900 dark:text-white tracking-tight text-3xl font-extrabold leading-tight text-left pb-3">What alerts matter to you?</h2>
     <p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-relaxed">
-      This helps us send you timely alerts based on your typical commuting schedule.
+      Choose the types of alerts you want to receive so we can keep you informed when it counts.
     </p>
   </div>
 
   <!-- Selection List -->
   <div class="flex flex-col gap-2 p-4">
 
-    <!-- Option: Early Morning -->
+    <!-- Option: Flood -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">bedtime</span>
+          <span class="material-symbols-outlined text-2xl">water</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Early Morning</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Before 6:00 AM</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Flood Warnings</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Flooded roads & alternate routes</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -112,15 +112,15 @@
       </div>
     </div>
 
-    <!-- Option: Morning Rush -->
+    <!-- Option: Typhoon -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">wb_sunny</span>
+          <span class="material-symbols-outlined text-2xl">thunderstorm</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Morning Rush</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">6:00 AM – 9:00 AM</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Typhoon & Weather</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">PAGASA signals & suspension notices</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -131,15 +131,15 @@
       </div>
     </div>
 
-    <!-- Option: Midday -->
+    <!-- Option: Crime -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">light_mode</span>
+          <span class="material-symbols-outlined text-2xl">gpp_bad</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Midday / Afternoon</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">9:00 AM – 5:00 PM</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Crime & Safety</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Incident reports near your route</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -150,15 +150,15 @@
       </div>
     </div>
 
-    <!-- Option: Evening Rush -->
+    <!-- Option: Traffic -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">partly_cloudy_night</span>
+          <span class="material-symbols-outlined text-2xl">traffic</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Evening Rush</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">5:00 PM – 9:00 PM</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Heavy Traffic</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Congestion & road closures</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -169,15 +169,15 @@
       </div>
     </div>
 
-    <!-- Option: Late Night -->
+    <!-- Option: Fare Changes -->
     <div class="option-card flex items-center gap-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 min-h-[80px] py-3 justify-between hover:border-primary transition-all group cursor-pointer">
       <div class="flex items-center gap-4">
         <div class="text-primary flex items-center justify-center rounded-xl bg-primary/10 shrink-0 size-12">
-          <span class="material-symbols-outlined text-2xl">nightlight</span>
+          <span class="material-symbols-outlined text-2xl">payments</span>
         </div>
         <div class="flex flex-col justify-center">
-          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Late Night</p>
-          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">After 9:00 PM</p>
+          <p class="text-slate-900 dark:text-white text-base font-semibold leading-normal">Fare Changes</p>
+          <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug">Price updates & discount notices</p>
         </div>
       </div>
       <div class="shrink-0">
@@ -193,7 +193,7 @@
   <!-- Actions -->
   <div class="mt-auto p-4 flex flex-col gap-3">
     <button id="survey-continue-btn" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] opacity-60">
-      Continue
+      Finish Setup
     </button>
     <button id="survey-skip-btn" class="w-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold py-3 rounded-xl transition-all">
       Skip for now
@@ -201,5 +201,5 @@
   </div>
 
 </div>
-<script src="survey3.js"></script>
+<script src="../../survey4.js"></script>
 </body></html>
