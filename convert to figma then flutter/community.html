@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Safety Feed — Community &amp; Notifications</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+  <!-- Internal styles — light mode tokens + all component styles -->
+  <style>
+/* ═══════════════════════════════════════════
+   TOKENS — LIGHT MODE
+   Safe · Transparent · Prepared
+   Palette: white + teal/blue-green accents,
+   warm greens, sky blues, soft ambers
+═══════════════════════════════════════════ */
+:root {
+  /* Surfaces */
+  --bg:          #f0fafa;          /* lightest teal-white canvas    */
+  --bg2:         #e8f5f5;          /* notif sheet / sheet bg        */
+  --card:        #ffffff;          /* card surface                  */
+  --card2:       #eef7f7;          /* input / inner card surface    */
+  --border:      rgba(14,148,148,0.14);   /* subtle teal border     */
+  --border2:     rgba(14,148,148,0.28);   /* stronger teal border   */
+
+  /* Brand / accent — same hues, richer saturation for light bg */
+  --teal:        #0d9e9e;          /* primary teal CTA              */
+  --teal-dim:    rgba(13,158,158,0.10);
+  --teal-glow:   rgba(13,158,158,0.22);
+  --teal-light:  #14b8a8;          /* hover / secondary teal        */
+
+  /* Semantic colours — adjusted for legibility on white */
+  --green:       #16a05a;          /* safe / verified               */
+  --green-dim:   rgba(22,160,90,0.12);
+  --blue:        #1a7fc1;          /* official / info               */
+  --blue-dim:    rgba(26,127,193,0.12);
+  --yellow:      #c07c00;          /* caution / moderate            */
+  --yellow-dim:  rgba(192,124,0,0.10);
+  --orange:      #c95b18;          /* high risk                     */
+  --orange-dim:  rgba(201,91,24,0.10);
+  --red:         #c0342c;          /* critical / alert              */
+  --red-dim:     rgba(192,52,44,0.10);
+
+  /* Text */
+  --text:        #0d2e35;          /* near-black with teal tint     */
+  --text2:       #3a7070;          /* secondary — muted teal-grey   */
+  --text3:       #7aabab;          /* placeholder / disabled        */
+
+  /* Radii — unchanged */
+  --r-sm:  8px;
+  --r-md:  14px;
+  --r-lg:  20px;
+  --r-xl:  26px;
+  --r-full: 9999px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; background: #d4eeee; font-family: 'DM Sans', sans-serif; color: var(--text); }
+
+/* ── CENTRED STAGE ── */
+body {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% 0%, rgba(13,158,158,0.12) 0%, transparent 65%), #daf0f0;
+}
+
+/* ── PHONE SHELL ── */
+.phone {
+  width: 390px;
+  height: 844px;
+  border-radius: 44px;
+  background: var(--bg);
+  border: 2px solid rgba(13,158,158,0.22);
+  box-shadow: 0 40px 100px rgba(13,100,100,0.18), 0 0 0 1px rgba(255,255,255,0.7) inset, 0 0 60px rgba(13,158,158,0.08);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SCROLL AREA ── */
+.scroll-area {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+  padding-bottom: 80px;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ── HEADER ── */
+.app-header {
+  position: sticky; top: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(240,250,250,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.hdr-icon {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--card); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s; position: relative;
+}
+.hdr-icon:hover { background: var(--card2); }
+.hdr-icon .msi { font-size: 20px; color: var(--teal); }
+.hdr-center h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 17px; font-weight: 800; color: var(--text);
+  text-align: center; letter-spacing: -0.3px;
+}
+.hdr-center p {
+  font-size: 10px; font-weight: 600; color: var(--teal);
+  text-align: center; letter-spacing: 1.5px; text-transform: uppercase;
+}
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); border: 2px solid var(--bg);
+  transition: opacity 0.3s;
+}
+.notif-dot.hidden { opacity: 0; pointer-events: none; }
+
+/* ── WEATHER HERO ── */
+.weather-hero {
+  margin: 16px; border-radius: var(--r-xl); padding: 20px;
+  background: linear-gradient(135deg, #0c7c8c 0%, #0a6070 60%, #074d62 100%);
+  border: 1px solid rgba(13,158,158,0.3);
+  box-shadow: 0 8px 32px rgba(13,100,100,0.2);
+  position: relative; overflow: hidden;
+}
+.weather-hero::before {
+  content: '';
+  position: absolute; top: -30px; right: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+.weather-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.weather-left { display: flex; align-items: center; gap: 12px; }
+.weather-left .msi { font-size: 42px; color: var(--teal); font-variation-settings: 'FILL' 1; }
+.weather-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; color: #fff; }
+.weather-sub { font-size: 12px; color: #fff; margin-top: 2px; }
+.weather-temp { font-size: 34px; font-weight: 300; color: #fff; }
+.weather-feels { font-size: 11px; color: var(--teal-light); font-weight: 600; text-align: right; margin-top: 2px; }
+.weather-actions { display: flex; gap: 10px; }
+.btn-primary {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px; border-radius: var(--r-md);
+  background: var(--teal); color: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700;
+  border: none; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px var(--teal-glow); }
+.btn-primary .msi { font-size: 16px; }
+.btn-secondary {
+  padding: 10px 18px; border-radius: var(--r-md);
+  background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+  color: #fff; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+}
+
+/* ── FORECAST STRIP ── */
+.forecast-strip {
+  display: flex; margin: 0 16px 14px;
+  border-radius: var(--r-md); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.fc-day {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px; gap: 4px;
+  background: var(--card); border-right: 1px solid var(--border);
+  cursor: pointer; transition: background 0.2s;
+}
+.fc-day:last-child { border-right: none; }
+.fc-day.active { background: var(--teal-dim); }
+.fc-day-name { font-size: 9px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+.fc-day.active .fc-day-name { color: var(--teal); }
+.fc-icon { font-size: 18px; }
+.fc-temp { font-size: 13px; font-weight: 700; color: var(--text); }
+.fc-risk { font-size: 9px; font-weight: 800; letter-spacing: 0.3px; }
+.risk-h { color: var(--red); }
+.risk-m { color: var(--yellow); }
+.risk-l { color: var(--green); }
+
+/* ── NEWS STRIP (moved from notif panel, now in Safety Feed) ── */
+.news-strip {
+  margin: 0 16px 14px; border-radius: var(--r-lg);
+  background: var(--card); border: 1px solid var(--border);
+  overflow: hidden;
+}
+.news-strip-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px 8px;
+}
+.news-strip-header h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px;
+  display: flex; align-items: center; gap: 6px;
+}
+.news-strip-header h3 .msi { font-size: 16px; color: var(--yellow); font-variation-settings: 'FILL' 1; }
+.news-strip-header span { font-size: 11px; color: var(--teal); font-weight: 600; cursor: pointer; }
+.news-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; border-top: 1px solid var(--border);
+  cursor: pointer; transition: background 0.15s;
+}
+.news-item:hover { background: rgba(30,200,200,0.04); }
+.news-source-tag {
+  padding: 2px 7px; border-radius: var(--r-full);
+  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.ns-official { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(59,158,212,0.25); }
+.ns-gov      { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,201,124,0.25); }
+.ns-alert    { background: var(--red-dim); color: var(--red); border: 1px solid rgba(224,82,82,0.25); }
+.news-title { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; flex: 1; }
+.news-time  { font-size: 10px; color: var(--text2); flex-shrink: 0; }
+
+/* ── CATEGORY PILLS ── */
+.cat-scroll {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 0 16px 12px; scrollbar-width: none;
+}
+.cat-scroll::-webkit-scrollbar { display: none; }
+.cat-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border-radius: var(--r-full);
+  background: var(--card); border: 1.5px solid var(--border);
+  white-space: nowrap; font-size: 11px; font-weight: 700;
+  color: var(--text2); cursor: pointer; transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.cat-pill .msi { font-size: 14px; }
+.cat-pill.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+/* ── SECTION HEADER ── */
+.sec-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 16px 10px;
+}
+.sec-hdr h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -0.3px;
+}
+.sec-hdr button {
+  font-size: 12px; color: var(--teal); font-weight: 600;
+  background: none; border: none; cursor: pointer;
+}
+
+/* ── REPORT CARD ── */
+.report-card {
+  margin: 0 16px 14px; border-radius: var(--r-lg);
+  background: var(--card); border: 1px solid var(--border);
+  overflow: hidden; box-shadow: 0 2px 14px rgba(13,100,100,0.1);
+  animation: fadeUp 0.4s ease both;
+}
+.report-card:nth-child(2) { animation-delay: 0.08s; }
+.report-card:nth-child(3) { animation-delay: 0.16s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.report-hdr { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px; }
+.reporter { display: flex; align-items: center; gap: 10px; }
+.av {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+.rep-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.rep-meta { font-size: 10px; color: var(--text2); }
+
+.sev-badge {
+  padding: 3px 9px; border-radius: var(--r-full);
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.sev-critical { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(224,82,82,0.3); }
+.sev-high     { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(232,126,62,0.3); }
+.sev-moderate { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(240,180,41,0.3); }
+.sev-info     { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(59,158,212,0.3); }
+
+.rep-body { padding: 0 14px 10px; font-size: 12px; line-height: 1.6; color: var(--text2); }
+
+.rep-img {
+  margin: 0 14px 10px; border-radius: var(--r-md); overflow: hidden;
+  background: linear-gradient(135deg, #b2dde2, #8eccd4);
+  height: 150px; display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.rep-img-icon { font-size: 44px; opacity: 0.45; }
+.gps-tag {
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.45); backdrop-filter: blur(8px);
+  padding: 3px 8px; border-radius: 6px;
+  font-size: 10px; color: #fff; font-weight: 700;
+  display: flex; align-items: center; gap: 3px;
+}
+.gps-tag .msi { font-size: 12px; }
+
+.verify-wrap { padding: 0 14px 8px; }
+.verify-label {
+  font-size: 10px; color: var(--text2); margin-bottom: 5px;
+  display: flex; justify-content: space-between;
+}
+.verify-bar { height: 3px; border-radius: 99px; background: rgba(13,158,158,0.12); }
+.verify-fill { height: 100%; border-radius: 99px; }
+
+.rep-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px 14px; border-top: 1px solid rgba(13,158,158,0.1);
+}
+.rep-action-group { display: flex; align-items: center; gap: 14px; }
+.act-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+  color: var(--text2); transition: color 0.2s; font-family: 'DM Sans', sans-serif;
+  position: relative;
+}
+.act-btn .msi { font-size: 19px; transition: transform 0.15s; }
+.act-btn.active { color: var(--teal); }
+.act-btn.active .msi { font-variation-settings: 'FILL' 1; transform: scale(1.15); }
+.act-btn:hover { color: var(--teal-light); }
+
+/* float-up +1 */
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.7); }
+}
+.float-label {
+  position: absolute; top: -8px; left: 0;
+  font-size: 11px; font-weight: 800; color: var(--teal);
+  pointer-events: none; animation: floatUp 0.65s ease both;
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 72px;
+  background: rgba(240,250,250,0.97); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 0 8px 10px; z-index: 50;
+}
+.nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  cursor: pointer; transition: color 0.2s; padding: 6px 14px;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+}
+.nav-btn .msi { font-size: 22px; }
+.nav-btn.active { color: var(--teal); }
+.nav-btn.active .msi { font-variation-settings: 'FILL' 1; }
+
+/* ── FAB ── */
+.fab {
+  position: absolute; bottom: 82px; right: 20px; z-index: 55;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--teal); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px var(--teal-glow); cursor: pointer;
+  transition: transform 0.2s; border: none;
+}
+.fab:hover { transform: scale(1.08); }
+.fab .msi { font-size: 24px; font-variation-settings: 'FILL' 1; }
+
+/* ═══════════════════════════════════════════
+   NOTIFICATION BOTTOM SHEET (Instagram Style)
+═══════════════════════════════════════════ */
+.notif-backdrop {
+  position: absolute; inset: 0; z-index: 200;
+  background: rgba(8,40,50,0.35); backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.notif-backdrop.open {
+  opacity: 1; pointer-events: all;
+}
+
+.notif-sheet {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 201;
+  background: var(--bg2);
+  border-radius: 28px 28px 0 0;
+  border-top: 1px solid var(--border2);
+  max-height: 80%;
+  display: flex; flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -10px 50px rgba(13,100,100,0.14);
+}
+.notif-sheet.open {
+  transform: translateY(0);
+}
+
+.sheet-handle {
+  width: 36px; height: 4px; border-radius: 99px;
+  background: rgba(13,158,158,0.2); margin: 12px auto 0; flex-shrink: 0;
+}
+.sheet-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px 10px; flex-shrink: 0;
+}
+.sheet-header h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.3px;
+}
+.sheet-close {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(13,158,158,0.1); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); transition: background 0.2s;
+}
+.sheet-close:hover { background: rgba(13,158,158,0.2); }
+.sheet-close .msi { font-size: 18px; }
+
+.notif-tabs-row {
+  display: flex; gap: 6px; padding: 0 20px 10px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.notif-tabs-row::-webkit-scrollbar { display: none; }
+.ntab {
+  padding: 5px 14px; border-radius: var(--r-full);
+  font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  border: 1px solid var(--border); background: transparent; color: var(--text2);
+  transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+}
+.ntab.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+.notif-list {
+  overflow-y: auto; flex: 1; padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30,200,200,0.15) transparent;
+}
+
+.notif-group {
+  padding: 10px 20px 3px;
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text3);
+}
+
+.notif-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 20px; cursor: pointer;
+  border-left: 3px solid transparent; transition: background 0.15s;
+}
+.notif-item.unread { background: rgba(13,158,158,0.06); border-left-color: var(--teal); }
+.notif-item:hover  { background: rgba(13,158,158,0.04); }
+.notif-item:active { background: rgba(13,158,158,0.09); }
+
+.nav-wrap { position: relative; flex-shrink: 0; }
+.nav-av {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; color: #fff;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.nav-badge {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; border: 2px solid var(--bg2);
+}
+.nb-flood   { background: var(--blue); }
+.nb-typhoon { background: #6b7fd4; }
+.nb-verify  { background: var(--green); }
+.nb-fire    { background: var(--orange); }
+.nb-forecast{ background: var(--teal); }
+.nb-crime   { background: #9b72cf; }
+
+.notif-content { flex: 1; min-width: 0; }
+.notif-text { font-size: 12px; line-height: 1.5; color: var(--text); }
+.notif-text strong { font-weight: 700; color: var(--text); }
+.notif-time { font-size: 10px; color: var(--text3); margin-top: 3px; font-weight: 500; }
+.unread-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); flex-shrink: 0; margin-top: 8px; transition: opacity 0.3s; }
+
+.notif-act {
+  margin-top: 6px; display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 6px;
+  background: var(--teal-dim); border: 1px solid rgba(13,158,158,0.22);
+  font-size: 10px; font-weight: 700; color: var(--teal); cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.notif-act .msi { font-size: 12px; }
+
+.ib {
+  display: inline-flex; align-items: center;
+  padding: 1px 6px; border-radius: 4px;
+  font-size: 9px; font-weight: 800; vertical-align: middle;
+  margin-left: 3px; text-transform: uppercase;
+}
+.ib-flood   { background: var(--blue-dim);   color: var(--blue); }
+.ib-typhoon { background: rgba(107,127,212,0.15); color: #5562bf; }
+.ib-fire    { background: var(--orange-dim); color: var(--orange); }
+.ib-verify  { background: var(--green-dim);  color: var(--green); }
+.ib-forecast{ background: var(--teal-dim);   color: var(--teal); }
+
+.n-divider { height: 1px; background: var(--border); margin: 3px 20px; }
+
+/* Material Symbols helper */
+.msi {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 400; font-style: normal; line-height: 1;
+  letter-spacing: normal; text-transform: none;
+  display: inline-block; white-space: nowrap; word-wrap: normal;
+  direction: ltr; -webkit-font-smoothing: antialiased;
+}
+  </style>
+
+  <!-- Dark mode overrides (inlined from community.css) -->
+  <style>
+/* ── DARK TOKEN OVERRIDES ────────────────────────────────── */
+[data-theme="dark"] {
+  /* Surfaces */
+  --bg:          #0b1120;
+  --bg2:         #0e1828;
+  --card:        #111c2e;
+  --card2:       #162030;
+  --border:      rgba(18,217,192,0.12);
+  --border2:     rgba(18,217,192,0.22);
+
+  /* Brand accent */
+  --teal:        #12d9c0;
+  --teal-dim:    rgba(18,217,192,0.10);
+  --teal-glow:   rgba(18,217,192,0.25);
+  --teal-light:  #1aefcf;
+
+  /* Semantic */
+  --green:       #34d399;
+  --green-dim:   rgba(52,211,153,0.12);
+  --blue:        #60aeff;
+  --blue-dim:    rgba(96,174,255,0.12);
+  --yellow:      #fde047;
+  --yellow-dim:  rgba(253,224,71,0.12);
+  --orange:      #fb923c;
+  --orange-dim:  rgba(251,146,60,0.12);
+  --red:         #fb7185;
+  --red-dim:     rgba(251,113,133,0.12);
+
+  /* Text */
+  --text:        #e8f0f8;
+  --text2:       #6b8aad;
+  --text3:       #4a6080;
+}
+
+/* ── PAGE BACKGROUND ─────────────────────────────────────── */
+[data-theme="dark"] body {
+  background: radial-gradient(ellipse at 50% 0%, rgba(18,217,192,0.06) 0%, transparent 65%), #080f1c;
+}
+
+[data-theme="dark"] .phone {
+  background: var(--bg);
+  border-color: rgba(18,217,192,0.18);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6),
+              0 0 0 1px rgba(18,217,192,0.08) inset,
+              0 0 60px rgba(18,217,192,0.06);
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+[data-theme="dark"] .app-header {
+  background: rgba(11,17,32,0.94);
+  border-bottom-color: var(--border);
+}
+[data-theme="dark"] .hdr-icon            { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .hdr-icon:hover      { background: var(--card2); }
+[data-theme="dark"] .hdr-center h1       { color: var(--text); }
+[data-theme="dark"] .hdr-center p        { color: var(--teal); }
+
+/* ── WEATHER HERO ────────────────────────────────────────── */
+[data-theme="dark"] .weather-hero {
+  background: linear-gradient(135deg, #0a2a3a 0%, #071e2e 60%, #040f1d 100%);
+  border-color: rgba(18,217,192,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .btn-primary  { background: var(--teal); color: #050d18; }
+[data-theme="dark"] .btn-secondary {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.18);
+  color: #e8f0f8;
+}
+
+/* ── FORECAST STRIP ──────────────────────────────────────── */
+[data-theme="dark"] .forecast-strip          { border-color: var(--border); }
+[data-theme="dark"] .fc-day                  { background: var(--card); border-right-color: var(--border); }
+[data-theme="dark"] .fc-day.active           { background: var(--teal-dim); }
+[data-theme="dark"] .fc-day-name             { color: var(--text2); }
+[data-theme="dark"] .fc-day.active .fc-day-name { color: var(--teal); }
+[data-theme="dark"] .fc-temp                 { color: var(--text); }
+
+/* ── NEWS STRIP ──────────────────────────────────────────── */
+[data-theme="dark"] .news-strip              { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .news-strip-header h3    { color: var(--text); }
+[data-theme="dark"] .news-strip-header span  { color: var(--teal); }
+[data-theme="dark"] .news-item               { border-top-color: var(--border); }
+[data-theme="dark"] .news-item:hover         { background: rgba(18,217,192,0.04); }
+[data-theme="dark"] .news-title              { color: var(--text); }
+[data-theme="dark"] .news-time               { color: var(--text2); }
+[data-theme="dark"] .ns-official { background: var(--blue-dim);  color: var(--blue);  border-color: rgba(96,174,255,0.25); }
+[data-theme="dark"] .ns-gov      { background: var(--green-dim); color: var(--green); border-color: rgba(52,211,153,0.25); }
+[data-theme="dark"] .ns-alert    { background: var(--red-dim);   color: var(--red);   border-color: rgba(251,113,133,0.25); }
+
+/* ── CATEGORY PILLS ──────────────────────────────────────── */
+[data-theme="dark"] .cat-pill        { background: var(--card); border-color: var(--border); color: var(--text2); }
+[data-theme="dark"] .cat-pill.active { background: var(--teal); color: #050d18; border-color: var(--teal); }
+
+/* ── SECTION HEADER ──────────────────────────────────────── */
+[data-theme="dark"] .sec-hdr h2     { color: var(--text); }
+[data-theme="dark"] .sec-hdr button { color: var(--teal); }
+
+/* ── REPORT CARDS ────────────────────────────────────────── */
+[data-theme="dark"] .report-card {
+  background: var(--card);
+  border-color: var(--border);
+  box-shadow: 0 2px 14px rgba(0,0,0,0.35);
+}
+[data-theme="dark"] .rep-name { color: var(--text); }
+[data-theme="dark"] .rep-meta { color: var(--text2); }
+[data-theme="dark"] .rep-body { color: var(--text2); }
+
+/* Severity badges */
+[data-theme="dark"] .sev-critical { background: var(--red-dim);    color: var(--red);    border-color: rgba(251,113,133,0.3); }
+[data-theme="dark"] .sev-high     { background: var(--orange-dim); color: var(--orange); border-color: rgba(251,146,60,0.3); }
+[data-theme="dark"] .sev-moderate { background: var(--yellow-dim); color: var(--yellow); border-color: rgba(253,224,71,0.3); }
+[data-theme="dark"] .sev-info     { background: var(--blue-dim);   color: var(--blue);   border-color: rgba(96,174,255,0.3); }
+
+[data-theme="dark"] .rep-img { background: linear-gradient(135deg, #0e2233, #091a28); }
+[data-theme="dark"] .verify-label span { color: var(--text2); }
+[data-theme="dark"] .verify-bar        { background: rgba(18,217,192,0.08); }
+[data-theme="dark"] .rep-actions       { border-top-color: rgba(18,217,192,0.08); }
+[data-theme="dark"] .act-btn           { color: var(--text2); }
+[data-theme="dark"] .act-btn.active    { color: var(--teal); }
+[data-theme="dark"] .act-btn:hover     { color: var(--teal-light); }
+[data-theme="dark"] .float-label       { color: var(--teal); }
+
+/* ── BOTTOM NAV ──────────────────────────────────────────── */
+[data-theme="dark"] .bottom-nav        { background: rgba(11,17,32,0.97); border-top-color: var(--border); }
+[data-theme="dark"] .nav-btn           { color: var(--text3); }
+[data-theme="dark"] .nav-btn.active    { color: var(--teal); }
+
+/* ── FAB ─────────────────────────────────────────────────── */
+[data-theme="dark"] .fab { background: var(--teal); color: #050d18; box-shadow: 0 4px 20px var(--teal-glow); }
+
+/* ── NOTIFICATION SHEET ──────────────────────────────────── */
+[data-theme="dark"] .notif-backdrop   { background: rgba(4,10,20,0.6); }
+[data-theme="dark"] .notif-sheet {
+  background: var(--bg2);
+  border-top-color: var(--border2);
+  box-shadow: 0 -10px 50px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .sheet-handle     { background: rgba(18,217,192,0.15); }
+[data-theme="dark"] .sheet-header h2  { color: var(--text); }
+[data-theme="dark"] .sheet-close      { background: rgba(18,217,192,0.08); color: var(--text2); }
+[data-theme="dark"] .sheet-close:hover { background: rgba(18,217,192,0.18); }
+
+[data-theme="dark"] .notif-tabs-row   { border-bottom-color: var(--border); }
+[data-theme="dark"] .ntab             { border-color: var(--border); color: var(--text2); background: transparent; }
+[data-theme="dark"] .ntab.active      { background: var(--teal); color: #050d18; border-color: var(--teal); }
+
+[data-theme="dark"] .notif-list { scrollbar-color: rgba(18,217,192,0.15) transparent; }
+[data-theme="dark"] .notif-group { color: var(--text3); }
+
+[data-theme="dark"] .notif-item.unread { background: rgba(18,217,192,0.06); border-left-color: var(--teal); }
+[data-theme="dark"] .notif-item:hover  { background: rgba(18,217,192,0.04); }
+[data-theme="dark"] .notif-item:active { background: rgba(18,217,192,0.09); }
+
+[data-theme="dark"] .notif-text        { color: var(--text); }
+[data-theme="dark"] .notif-text strong { color: var(--text); }
+[data-theme="dark"] .notif-time        { color: var(--text3); }
+[data-theme="dark"] .unread-dot        { background: var(--teal); }
+
+[data-theme="dark"] .notif-act {
+  background: var(--teal-dim);
+  border-color: rgba(18,217,192,0.2);
+  color: var(--teal);
+}
+
+/* Inline type badges */
+[data-theme="dark"] .ib-flood    { background: var(--blue-dim);           color: var(--blue); }
+[data-theme="dark"] .ib-typhoon  { background: rgba(107,127,212,0.15);    color: #8890df; }
+[data-theme="dark"] .ib-fire     { background: var(--orange-dim);         color: var(--orange); }
+[data-theme="dark"] .ib-verify   { background: var(--green-dim);          color: var(--green); }
+[data-theme="dark"] .ib-forecast { background: var(--teal-dim);           color: var(--teal); }
+
+[data-theme="dark"] .n-divider   { background: var(--border); }
+  </style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <!-- ══ HEADER ══ -->
+  <header class="app-header">
+    <div class="hdr-icon" title="Menu">
+      <span class="msi">menu</span>
+    </div>
+    <div class="hdr-center">
+      <h1>Safety Feed</h1>
+      <p>Metro Manila</p>
+    </div>
+    <!-- NOTIFICATION BELL — click to open sheet -->
+    <div class="hdr-icon" id="notif-bell" title="Notifications" onclick="openNotif()">
+      <span class="msi" style="color:var(--text)">notifications</span>
+      <span class="notif-dot" id="notif-dot"></span>
+    </div>
+  </header>
+
+  <!-- ══ SCROLL AREA ══ -->
+  <div class="scroll-area">
+
+    <!-- WEATHER HERO -->
+    <div class="weather-hero">
+      <div class="weather-top">
+        <div class="weather-left">
+          <span class="msi">rainy</span>
+          <div>
+            <div class="weather-title" id="weather-title">Heavy Rain</div>
+            <div class="weather-sub" id="weather-sub">Flood Warning Active</div>
+          </div>
+        </div>
+        <div>
+          <div class="weather-temp" id="weather-temp">24°C</div>
+          <div class="weather-feels" id="weather-feels">Feels like 26°</div>
+        </div>
+      </div>
+      <div class="weather-actions">
+        <button class="btn-primary"><span class="msi">map</span> View Map</button>
+        <button class="btn-secondary">Details</button>
+      </div>
+    </div>
+
+    <!-- FORECAST STRIP -->
+    <div class="forecast-strip" id="forecast-strip">
+      <div class="fc-day active"><div class="fc-day-name">Today</div><div class="fc-icon">🌧️</div><div class="fc-temp">24°</div><div class="fc-risk risk-h">HIGH</div></div>
+      <div class="fc-day" onclick="selectDay(this)"><div class="fc-day-name">Tue</div><div class="fc-icon">⛈️</div><div class="fc-temp">22°</div><div class="fc-risk risk-h">HIGH</div></div>
+      <div class="fc-day" onclick="selectDay(this)"><div class="fc-day-name">Wed</div><div class="fc-icon">🌦️</div><div class="fc-temp">25°</div><div class="fc-risk risk-m">MED</div></div>
+      <div class="fc-day" onclick="selectDay(this)"><div class="fc-day-name">Thu</div><div class="fc-icon">🌤️</div><div class="fc-temp">28°</div><div class="fc-risk risk-l">LOW</div></div>
+      <div class="fc-day" onclick="selectDay(this)"><div class="fc-day-name">Fri</div><div class="fc-icon">☀️</div><div class="fc-temp">30°</div><div class="fc-risk risk-l">SAFE</div></div>
+    </div>
+
+    <!-- ══ OFFICIAL NEWS (moved here from notif panel) ══ -->
+    <div class="news-strip">
+      <div class="news-strip-header">
+        <h3><span class="msi">campaign</span> Official News</h3>
+        <span>See All →</span>
+      </div>
+      <div id="news-items">
+        <div class="news-item">
+          <span class="news-source-tag ns-alert">PAGASA</span>
+          <div class="news-title">Signal No. 2 raised — Metro Manila & nearby provinces</div>
+          <div class="news-time">10m</div>
+        </div>
+        <div class="news-item">
+          <span class="news-source-tag ns-gov">QC Gov't</span>
+          <div class="news-title">12 evacuation centers opened; capacity 8,000 residents</div>
+          <div class="news-time">2h</div>
+        </div>
+        <div class="news-item">
+          <span class="news-source-tag ns-official">MMDA</span>
+          <div class="news-title">Marikina River at Level 3 — avoid riverside barangays</div>
+          <div class="news-time">3h</div>
+        </div>
+        <div class="news-item">
+          <span class="news-source-tag ns-gov">NDRRMC</span>
+          <div class="news-title">7-day flood forecast updated — improving by Thursday</div>
+          <div class="news-time">6h</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORY PILLS -->
+    <div class="cat-scroll">
+      <div class="cat-pill active" onclick="setCat(this)"><span class="msi">bolt</span> All</div>
+      <div class="cat-pill" onclick="setCat(this)"><span class="msi">water</span> Flood</div>
+      <div class="cat-pill" onclick="setCat(this)"><span class="msi">cyclone</span> Typhoon</div>
+      <div class="cat-pill" onclick="setCat(this)"><span class="msi">local_fire_department</span> Fire</div>
+      <div class="cat-pill" onclick="setCat(this)"><span class="msi">crisis_alert</span> Quake</div>
+      <div class="cat-pill" onclick="setCat(this)"><span class="msi">landslide</span> Slide</div>
+      <div class="cat-pill" onclick="setCat(this)"><span class="msi">security</span> Crime</div>
+    </div>
+
+    <!-- SECTION HEADER -->
+    <div class="sec-hdr">
+      <h2>Community Reports</h2>
+      <button onclick="LigtasAPI.fetchReports('all','recent')">Recent First</button>
+    </div>
+
+    <div id="reports-list">
+    <!-- ── REPORT 1 ── -->
+    <div class="report-card">
+      <div class="report-hdr">
+        <div class="reporter">
+          <div class="av" style="background:linear-gradient(135deg,#e63946,#c1121f)">JD</div>
+          <div>
+            <div class="rep-name">Juan Dela Cruz</div>
+            <div class="rep-meta">5 mins ago · Pasay City</div>
+          </div>
+        </div>
+        <span class="sev-badge sev-critical">Flood Watch</span>
+      </div>
+      <div class="rep-body">Knee-deep flooding along Taft Avenue near DLSU. Vehicles advised to take alternate routes immediately.</div>
+      <div class="rep-img">
+        <div class="rep-img-icon">🌊</div>
+        <div class="gps-tag"><span class="msi">location_on</span> GPS Verified</div>
+      </div>
+      <div class="verify-wrap">
+        <div class="verify-label"><span>Community verification</span><span id="v1-count" style="color:var(--teal)">124 / 150 needed</span></div>
+        <div class="verify-bar"><div class="verify-fill" id="v1-bar" style="width:83%;background:linear-gradient(90deg,var(--teal),var(--green))"></div></div>
+      </div>
+      <div class="rep-actions">
+        <div class="rep-action-group">
+          <button class="act-btn active" id="vbtn1" onclick="toggleVerify(this,'v1-count','v1-bar',124,150)">
+            <span class="msi">thumb_up</span> <span class="vcount">Verify (124)</span>
+          </button>
+          <button class="act-btn">
+            <span class="msi">chat_bubble</span> 12
+          </button>
+        </div>
+        <button class="act-btn"><span class="msi">share</span></button>
+      </div>
+    </div>
+
+    <!-- ── REPORT 2 ── -->
+    <div class="report-card">
+      <div class="report-hdr">
+        <div class="reporter">
+          <div class="av" style="background:linear-gradient(135deg,#3b9ed4,#1a6fa0)">MS</div>
+          <div>
+            <div class="rep-name">Maria Santos</div>
+            <div class="rep-meta">15 mins ago · Makati CBD</div>
+          </div>
+        </div>
+        <span class="sev-badge sev-moderate">Heavy Traffic</span>
+      </div>
+      <div class="rep-body">Stalled truck at EDSA–Ayala intersection. Traffic backed up all the way to Buendia.</div>
+      <div class="verify-wrap">
+        <div class="verify-label"><span>Community verification</span><span id="v2-count" style="color:var(--yellow)">45 / 150 needed</span></div>
+        <div class="verify-bar"><div class="verify-fill" id="v2-bar" style="width:30%;background:linear-gradient(90deg,var(--yellow),#e8a000)"></div></div>
+      </div>
+      <div class="rep-actions">
+        <div class="rep-action-group">
+          <button class="act-btn" id="vbtn2" onclick="toggleVerify(this,'v2-count','v2-bar',45,150)">
+            <span class="msi">thumb_up</span> <span class="vcount">Verify (45)</span>
+          </button>
+          <button class="act-btn"><span class="msi">chat_bubble</span> 5</button>
+        </div>
+        <button class="act-btn"><span class="msi">share</span></button>
+      </div>
+    </div>
+
+    <!-- ── REPORT 3 ── -->
+    <div class="report-card" style="border-color:rgba(59,158,212,0.28)">
+      <div class="report-hdr">
+        <div class="reporter">
+          <div class="av" style="background:linear-gradient(135deg,var(--blue),#1a6fa0)">PA</div>
+          <div>
+            <div class="rep-name">PAGASA Official</div>
+            <div class="rep-meta">30 mins ago · Metro Manila</div>
+          </div>
+        </div>
+        <span class="sev-badge sev-info">Official</span>
+      </div>
+      <div class="rep-body">Typhoon Signal No. 2 raised over Metro Manila and nearby provinces. Prepare emergency kits and monitor updates.</div>
+      <div class="verify-wrap">
+        <div class="verify-label"><span>Official government source</span><span style="color:var(--green)">✓ Verified</span></div>
+        <div class="verify-bar"><div class="verify-fill" style="width:100%;background:linear-gradient(90deg,var(--blue),var(--teal))"></div></div>
+      </div>
+      <div class="rep-actions">
+        <div class="rep-action-group">
+          <button class="act-btn active" id="vbtn3" onclick="toggleVerify(this,'','',341,9999)">
+            <span class="msi">thumb_up</span> <span class="vcount">Helpful (341)</span>
+          </button>
+          <button class="act-btn"><span class="msi">chat_bubble</span> 89</button>
+        </div>
+        <button class="act-btn"><span class="msi">share</span></button>
+      </div>
+    </div>
+
+    <!-- ── REPORT 4 ── -->
+    <div class="report-card">
+      <div class="report-hdr">
+        <div class="reporter">
+          <div class="av" style="background:linear-gradient(135deg,var(--orange),#c45e1e)">RC</div>
+          <div>
+            <div class="rep-name">Ramon Cruz</div>
+            <div class="rep-meta">1 hr ago · Tondo, Manila</div>
+          </div>
+        </div>
+        <span class="sev-badge sev-high">Fire Alert</span>
+      </div>
+      <div class="rep-body">House fire spreading near Delpan St. BFP units on scene. Residents advised to evacuate the surrounding area.</div>
+      <div class="verify-wrap">
+        <div class="verify-label"><span>Community verification</span><span id="v4-count" style="color:var(--yellow)">57 / 150 needed</span></div>
+        <div class="verify-bar"><div class="verify-fill" id="v4-bar" style="width:38%;background:linear-gradient(90deg,var(--yellow),#d48000)"></div></div>
+      </div>
+      <div class="rep-actions">
+        <div class="rep-action-group">
+          <button class="act-btn" id="vbtn4" onclick="toggleVerify(this,'v4-count','v4-bar',57,150)">
+            <span class="msi">thumb_up</span> <span class="vcount">Verify (57)</span>
+          </button>
+          <button class="act-btn"><span class="msi">chat_bubble</span> 8</button>
+        </div>
+        <button class="act-btn"><span class="msi">share</span></button>
+      </div>
+    </div>
+
+    </div><!-- /reports-list -->
+
+  </div><!-- /scroll-area -->
+
+  <!-- FAB -->
+  <button class="fab"><span class="msi">add_a_photo</span></button>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="window.location.href='ligtas.html'"><span class="msi">bookmark</span>Map</button>
+    <button class="nav-btn"><span class="msi">shield</span>Safety</button>
+    <button class="nav-btn active"><span class="msi">group</span>Reports</button>
+    <button class="nav-btn" onclick="window.location.href='profile.html'"><span class="msi">account_circle</span>Profile</button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       NOTIFICATION BACKDROP + BOTTOM SHEET
+  ══════════════════════════════════════════ -->
+  <div class="notif-backdrop" id="notif-backdrop" onclick="closeNotif()"></div>
+
+  <div class="notif-sheet" id="notif-sheet">
+    <div class="sheet-handle"></div>
+
+    <div class="sheet-header">
+      <h2>Notifications</h2>
+      <button class="sheet-close" onclick="closeNotif()"><span class="msi">close</span></button>
+    </div>
+
+    <!-- TABS — no "News" tab; news is in Safety Feed now -->
+    <div class="notif-tabs-row">
+      <div class="ntab active" onclick="setNTab(this)">All</div>
+      <div class="ntab" onclick="setNTab(this)">Reports</div>
+      <div class="ntab" onclick="setNTab(this)">Alerts</div>
+      <div class="ntab" onclick="setNTab(this)">Forecast</div>
+    </div>
+
+    <div class="notif-list" id="notif-list">
+
+      <!-- ── TODAY ── -->
+      <div class="notif-group">Today</div>
+
+      <!-- unread: flood alert -->
+      <div class="notif-item unread" data-notif-id="1" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#2563eb,#1a49b0)">🌊</div>
+          <div class="nav-badge nb-flood">💧</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            <strong>Flood Alert</strong> — Marikina River reached Level 3. Evacuation advisories for riverside barangays.
+            <span class="ib ib-flood">Flood</span>
+          </div>
+          <div class="notif-time">Just now · MMDA Official</div>
+          <div class="notif-act"><span class="msi">map</span> View on Map</div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <!-- unread: your report verified -->
+      <div class="notif-item unread" data-notif-id="2" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#22c97c,#1a9e60)">JD</div>
+          <div class="nav-badge nb-verify">✓</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            <strong>Your report</strong> about flooding on Taft Ave was verified by <strong>50+ community members.</strong>
+            <span class="ib ib-verify">Verified</span>
+          </div>
+          <div class="notif-time">3 minutes ago</div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <!-- unread: typhoon signal -->
+      <div class="notif-item unread" data-notif-id="3" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#6b7fd4,#4b5bbf)">🌀</div>
+          <div class="nav-badge nb-typhoon">🌪</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            <strong>PAGASA</strong> raised Typhoon Signal No. 2 in your area. Stay indoors and monitor updates.
+            <span class="ib ib-typhoon">Typhoon</span>
+          </div>
+          <div class="notif-time">20 minutes ago · Official</div>
+          <div class="notif-act"><span class="msi">open_in_new</span> Read Advisory</div>
+        </div>
+        <div class="unread-dot"></div>
+      </div>
+
+      <div class="n-divider"></div>
+
+      <!-- upvote received -->
+      <div class="notif-item" data-notif-id="4" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#e07a5f,#c45a3e)">AR</div>
+          <div class="nav-badge nb-verify">👍</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            <strong>Ana R.</strong> and <strong>12 others</strong> upvoted your flood report on Marcos Highway.
+          </div>
+          <div class="notif-time">1 hour ago</div>
+        </div>
+      </div>
+
+      <!-- fire near saved location -->
+      <div class="notif-item" data-notif-id="5" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#e87e3e,#c45e1e)">🔥</div>
+          <div class="nav-badge nb-fire">🔥</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            New <strong>fire report</strong> near your saved location in <strong>Tondo, Manila.</strong>
+            <span class="ib ib-fire">Fire</span>
+          </div>
+          <div class="notif-time">2 hours ago</div>
+          <div class="notif-act"><span class="msi">thumb_up</span> Verify Report</div>
+        </div>
+      </div>
+
+      <div class="n-divider"></div>
+      <div class="notif-group">Yesterday</div>
+
+      <!-- forecast update -->
+      <div class="notif-item" data-notif-id="6" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#1ec8c8,#0fa0a0)">📡</div>
+          <div class="nav-badge nb-forecast">🌤</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            <strong>7-Day Forecast updated</strong> — Weather improving by Thursday. Flood risk drops to LOW.
+            <span class="ib ib-forecast">Forecast</span>
+          </div>
+          <div class="notif-time">Yesterday, 6:00 PM</div>
+        </div>
+      </div>
+
+      <!-- comment on your report -->
+      <div class="notif-item" data-notif-id="7" onclick="markRead(this)">
+        <div class="nav-wrap">
+          <div class="nav-av" style="background:linear-gradient(135deg,#457b9d,#2d5f7e)">RC</div>
+          <div class="nav-badge nb-verify">👥</div>
+        </div>
+        <div class="notif-content">
+          <div class="notif-text">
+            <strong>Ramon C.</strong> commented: <em style="color:var(--text2)">"This is accurate, same situation here."</em>
+          </div>
+          <div class="notif-time">Yesterday, 11:22 AM</div>
+        </div>
+      </div>
+
+      <div style="height:20px"></div>
+    </div><!-- /notif-list -->
+  </div><!-- /notif-sheet -->
+
+</div><!-- /phone -->
+
+<!-- External JS — Flask integration layer + UI renderers (community.js) -->
+<script src="community.js"></script>
+</body>
+</html>
