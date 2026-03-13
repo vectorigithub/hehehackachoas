@@ -769,16 +769,16 @@ class _FilterChipsRow extends StatelessWidget {
             GestureDetector(
               onTap: ctrl.clearAllFilters,
               child: Container(
-                width: 32,
-                height: 32,
+                width: 24,
+                height: 24,
                 decoration: BoxDecoration(
                   color: AppColors.card2(isDark),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: AppColors.border(isDark)),
                 ),
                 child: Icon(
                   Icons.close_rounded,
-                  size: 18,
+                  size: 14,
                   color: AppColors.text2(isDark),
                 ),
               ),
