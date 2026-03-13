@@ -130,7 +130,7 @@ class _ProfileHero extends StatelessWidget {
               border: Border.all(color: AppColors.primaryTeal(context.isDark), width: 2.5)),
             child: ClipOval(child: user.avatarUrl != null
               ? Image.network(user.avatarUrl!, fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _fallback())
+                  errorBuilder: (_, _, _) => _fallback())
               : _fallback()),
           ),
           Positioned(bottom: 0, right: 0,
@@ -280,7 +280,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   border: Border.all(color: AppColors.primaryTeal(context.isDark), width: 2.5)),
                 child: ClipOval(child: ctrl.user.avatarUrl != null
                   ? Image.network(ctrl.user.avatarUrl!, fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _avatarFallback())
+                      errorBuilder: (_, _, _) => _avatarFallback())
                   : _avatarFallback()),
               ),
               Positioned.fill(child: ClipOval(child: Container(

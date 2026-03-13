@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_router.dart';
+import '../../core/session_manager.dart';
 import '../../screens/explore/explore_controller.dart';
 import '../../widgets/shared_widgets.dart';
 
@@ -35,8 +36,8 @@ class SurveyView extends StatefulWidget {
 class _SurveyViewState extends State<SurveyView> {
   int _step = 0;
 
-  // Step 1 — commuter type (single select)
-  String? _commuterType;
+  // Step 1 — commuter type (multi select)
+  final Set<String> _commuterTypes = {};
 
   // Step 2 — transport (multi select)
   final Set<String> _transport = {};
@@ -92,9 +93,15 @@ class _SurveyViewState extends State<SurveyView> {
             child: KeyedSubtree(
               key: ValueKey(_step),
               child: _step == 0 ? _StepCommuter(
-                selected: _commuterType,
+                selected: _commuterTypes,
                 options: _commuterOptions,
-                onSelect: (v) => setState(() => _commuterType = v),
+                onToggle: (v) => setState(() {
+                  if (_commuterTypes.contains(v)) {
+                    _commuterTypes.remove(v);
+                  } else {
+                    _commuterTypes.add(v);
+                  }
+                }),
               ) : _step == 1 ? _StepMulti(
                 title: 'How do you\nusually commute?',
                 subtitle: 'Select all that apply',
@@ -141,7 +148,7 @@ class _SurveyViewState extends State<SurveyView> {
   }
 
   bool get _canContinue {
-    if (_step == 0) return _commuterType != null;
+    if (_step == 0) return _commuterTypes.isNotEmpty;
     if (_step == 1) return _transport.isNotEmpty;
     return true; // safety step optional
   }
@@ -155,10 +162,12 @@ class _SurveyViewState extends State<SurveyView> {
       // On success, seed the explore filters with the user's answers so they
       // show up pre-selected when the explore screen loads for the first time.
       context.read<ExploreController>().setSurveyDefaults(
-        commuterType: _commuterType,
-        transport:    _transport.toList(),
-        safety:       _safety.toList(),
+        commuterTypes: _commuterTypes.toList(),
+        transport:     _transport.toList(),
+        safety:        _safety.toList(),
       );
+      // Mark last route as explore so short inactivity resumes into the shell.
+      SessionManager.instance.setLastRoute(AppRouter.explore);
       Navigator.pushReplacementNamed(context, AppRouter.explore);
     }
   }
@@ -188,11 +197,14 @@ class _ProgressBar extends StatelessWidget {
 
 // ── Step 1: single select commuter type ─────────────────────
 class _StepCommuter extends StatelessWidget {
-  final String? selected;
+  final Set<String> selected;
   final List<_Option> options;
-  final ValueChanged<String> onSelect;
-  const _StepCommuter({required this.selected, required this.options,
-    required this.onSelect});
+  final ValueChanged<String> onToggle;
+  const _StepCommuter({
+    required this.selected,
+    required this.options,
+    required this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -210,10 +222,12 @@ class _StepCommuter extends StatelessWidget {
           crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10,
           childAspectRatio: 2.2,
           children: options.map((o) {
-            final isSelected = selected == o.key;
+            final isSelected = selected.contains(o.key);
             return _OptionChip(
-              option: o, selected: isSelected,
-              onTap: () => onSelect(o.key));
+              option: o,
+              selected: isSelected,
+              onTap: () => onToggle(o.key),
+            );
           }).toList(),
         )),
       ]),

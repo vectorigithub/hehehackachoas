@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_router.dart';
+import '../../core/session_manager.dart';
 
 // ════════════════════════════════════════════════════════════════
 // LOGIN / REGISTRATION SCREEN  —  PLACEHOLDER
@@ -99,10 +100,14 @@ class _LoginViewState extends State<LoginView> {
                 label: _isLogin ? 'Sign In' : 'Create Account',
                 onTap: () {
                   if (_isLogin) {
-                    // Returning user → main shell
+                    // Returning user → mark logged in and go to main shell
+                    SessionManager.instance.setLoggedIn(true);
+                    SessionManager.instance.setLastRoute(AppRouter.explore);
                     Navigator.pushReplacementNamed(context, AppRouter.explore);
                   } else {
-                    // New user → onboarding survey
+                    // New user → mark logged in and go to onboarding survey
+                    SessionManager.instance.setLoggedIn(true);
+                    SessionManager.instance.setLastRoute(AppRouter.survey);
                     Navigator.pushReplacementNamed(context, AppRouter.survey);
                   }
                 },

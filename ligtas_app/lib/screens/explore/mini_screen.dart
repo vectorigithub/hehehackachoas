@@ -168,7 +168,7 @@ class _LandingScreenState extends State<_LandingScreen>
                                 AnimatedBuilder(
                                   animation: Listenable.merge(
                                       [_pulseScale, _pulseOpacity]),
-                                  builder: (_, __) => SizedBox(
+                                  builder: (_, _) => SizedBox(
                                     width: 120, height: 120,
                                     child: Stack(
                                       alignment: Alignment.center,
@@ -788,7 +788,7 @@ class _InputField extends StatelessWidget {
           if (isActive)
             ListenableBuilder(
               listenable: controller,
-              builder: (_, __) => controller.text.isEmpty
+              builder: (_, _) => controller.text.isEmpty
                   ? const SizedBox.shrink()
                   : GestureDetector(
                       onTap: () => controller.clear(),

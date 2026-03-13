@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_router.dart';
+import '../../core/session_manager.dart';
 
 /// Splash / onboarding entry point.
 /// BACKEND: Replace _onInit with real auth check:
@@ -32,11 +33,32 @@ class _SplashViewState extends State<SplashView>
   Future<void> _navigate() async {
     await Future.delayed(const Duration(milliseconds: 2200));
     if (!mounted) return;
-    // BACKEND: check token / session here.
-    // If the user has a valid session → AppRouter.explore
-    // If first-time user              → AppRouter.survey
-    // Otherwise                       → AppRouter.login
-    Navigator.pushReplacementNamed(context, AppRouter.login);
+    // Decide where to go based on stored session + inactivity.
+    final session = SessionManager.instance;
+    final loggedIn = await session.isLoggedIn();
+    final hasActiveRoute = await session.hasActiveRoute();
+    final inactiveFor = await session.timeSinceLastActive();
+    const longTimeout = Duration(minutes: 45);
+
+    String next;
+
+    if (!loggedIn) {
+      // Never logged in → go to login
+      next = AppRouter.login;
+    } else if (hasActiveRoute) {
+      // User is currently navigating a route → always resume explore shell
+      next = AppRouter.explore;
+    } else if (inactiveFor > longTimeout) {
+      // Logged in but inactive for a long time (no active route) → reset to explore
+      next = AppRouter.explore;
+    } else {
+      // Logged in, recently active → resume last route or explore by default
+      next = await session.getLastRoute() ?? AppRouter.explore;
+    }
+
+    await session.updateLastActive();
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, next);
   }
 
   @override

@@ -6,6 +6,7 @@ import '../../core/app_colors.dart';
 import '../../core/theme_controller.dart';
 import '../../models/explore_models.dart';
 import '../../data/mock_data.dart';
+import '../../core/session_manager.dart';
 
 // ── Safety overlay models ─────────────────────────────────────────────────────
 // BACKEND: populate these from your API responses.
@@ -250,17 +251,15 @@ class ExploreController extends ChangeNotifier {
   // BACKEND: call this after a successful POST /api/user/survey response,
   // passing the values confirmed by the server rather than raw local state.
   // Key values must match the keys in mock_data.dart:
-  //   commuterType → commuterFilters  (e.g. 'student', 'women')
+  //   commuterTypes → commuterFilters (e.g. ['student', 'women'])
   //   transport    → transportFilters (e.g. 'jeep', 'bus', 'walk')
   //   safety       → ligtasFilters    (e.g. 'dark', 'crime', 'flooding')
   void setSurveyDefaults({
-    String?      commuterType,
-    List<String> transport = const [],
-    List<String> safety    = const [],
+    List<String> commuterTypes = const [],
+    List<String> transport     = const [],
+    List<String> safety        = const [],
   }) {
-    if (commuterType != null && commuterType.isNotEmpty) {
-      commuterFilters = [commuterType];
-    }
+    commuterFilters = List.of(commuterTypes);
     transportFilters = List.of(transport);
     ligtasFilters    = List.of(safety);
     _applyFilters();
@@ -430,17 +429,20 @@ class ExploreController extends ChangeNotifier {
   void selectRoute(RouteModel r) {
     _activeRoute = r;
     _state = AppState.state3;
+    SessionManager.instance.setHasActiveRoute(false);
     notifyListeners();
   }
 
   void startNavigation() {
     if (_activeRoute == null) return;
     _state = AppState.state4;
+    SessionManager.instance.setHasActiveRoute(true);
     notifyListeners();
   }
 
   void stopNavigation() {
     _state = AppState.state2;
+    SessionManager.instance.setHasActiveRoute(false);
     notifyListeners();
   }
 
@@ -533,6 +535,7 @@ class ExploreController extends ChangeNotifier {
 
   void backToRoutes() {
     _state = AppState.state2;
+    SessionManager.instance.setHasActiveRoute(false);
     notifyListeners();
   }
 

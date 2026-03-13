@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'core/theme_controller.dart';
 import 'core/app_router.dart';
 import 'core/app_colors.dart';
+import 'core/session_manager.dart';
 import 'screens/explore/explore_view.dart';
 import 'screens/explore/explore_controller.dart';
 import 'screens/community/community_view.dart';
 import 'screens/profile/profile_view.dart';
-import 'models/explore_models.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,9 +67,6 @@ class _RootShellState extends State<RootShell> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<ExploreController>().state;
-    final hideNav = appState == AppState.state3 || appState == AppState.state4;
-
     // FIX: Watch ThemeController HERE at the shell level, not inside
     // _LigtasBottomNav. This means the entire Scaffold (nav bar + body)
     // is rebuilt in the same frame when the theme changes, eliminating
@@ -84,17 +81,21 @@ class _RootShellState extends State<RootShell> {
         index: _currentIndex,
         children: _pages,
       ),
-      bottomNavigationBar: hideNav 
-          ? null 
-          : _LigtasBottomNav(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                if (index == 0) {
-                  context.read<ExploreController>().clearSearch();
-                }
-                setState(() => _currentIndex = index);
-              },
-            ),
+      bottomNavigationBar: _LigtasBottomNav(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            if (index == 0) {
+              context.read<ExploreController>().clearSearch();
+              SessionManager.instance.setLastRoute(AppRouter.explore);
+            } else if (index == 1) {
+              SessionManager.instance.setLastRoute(AppRouter.community);
+            } else if (index == 2) {
+              SessionManager.instance.setLastRoute(AppRouter.profile);
+            }
+            SessionManager.instance.updateLastActive();
+            setState(() => _currentIndex = index);
+          },
+        ),
     );
   }
 }

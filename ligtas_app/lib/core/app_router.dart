@@ -32,8 +32,8 @@ class AppRouter {
   }
 
   static PageRoute _fade(Widget page) => PageRouteBuilder(
-    pageBuilder: (_, __, ___) => page,
-    transitionsBuilder: (_, anim, __, child) => FadeTransition(
+    pageBuilder: (_, _, _) => page,
+    transitionsBuilder: (_, anim, _, child) => FadeTransition(
       opacity: CurvedAnimation(parent: anim, curve: Curves.easeOut),
       child: child),
     transitionDuration: const Duration(milliseconds: 220),
