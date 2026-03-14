@@ -192,6 +192,8 @@ class _CommunityViewState extends State<CommunityView> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
       children: [
+        const _WeatherHero(),
+        const SizedBox(height: 12),
         _AlertBanner(),
         const SizedBox(height: 12),
         _buildCategoryPills(),
@@ -754,3 +756,187 @@ void _showComingSoon(BuildContext context) => showDialog(
   barrierColor: Colors.transparent,
   builder: (_) => ComingSoonOverlay(onDismiss: () => Navigator.pop(context)),
 );
+
+// ─────────────────────────────────────────────────────────────
+// WEATHER HERO
+// Ported from WeatherHeroWidget in ligtas_community.
+// Uses mock data — BACKEND: replace with GET /api/forecast
+// ─────────────────────────────────────────────────────────────
+
+enum _RiskLevel { high, med, low, safe }
+
+class _WeatherHero extends StatefulWidget {
+  const _WeatherHero();
+  @override State<_WeatherHero> createState() => _WeatherHeroState();
+}
+
+class _WeatherHeroState extends State<_WeatherHero> {
+  int _selectedDay = 0;
+
+  // Mock forecast data — BACKEND: replace with ApiClient.instance.getSafety()
+  static const _condition  = 'Partly Cloudy';
+  static const _warning    = 'Moderate rain expected this afternoon';
+  static const _tempC      = 28;
+  static const _feelsLike  = 31;
+  static const _icon       = '🌦️';
+
+  // Fixed weather data per weekday slot (icons + temps)
+  static const _weatherData = [
+    ('🌧️', 24, _RiskLevel.high),
+    ('⛈️', 22, _RiskLevel.high),
+    ('🌦️', 25, _RiskLevel.med),
+    ('🌤️', 27, _RiskLevel.low),
+    ('🌤️', 28, _RiskLevel.low),
+    ('⛅',  29, _RiskLevel.safe),
+    ('☀️', 31, _RiskLevel.safe),
+  ];
+
+  static const _dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  // Builds 7-day list starting from today's actual weekday
+  List<(String, String, int, _RiskLevel)> get _days {
+    final todayIndex = DateTime.now().weekday - 1; // Mon=0 … Sun=6
+    return List.generate(7, (i) {
+      final dayIndex = (todayIndex + i) % 7;
+      final (icon, temp, risk) = _weatherData[i];
+      return (_dayNames[dayIndex], icon, temp, risk);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final teal = AppColors.primaryTeal(context.isDark);
+    return Column(children: [
+      // ── Hero card ────────────────────────────────────────
+      Container(
+        margin: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: [Color(0xFF0C7C8C), Color(0xFF0A6070), Color(0xFF074D62)],
+            stops: [0, 0.6, 1],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.teal.withValues(alpha: 0.3)),
+          boxShadow: const [BoxShadow(
+            color: Color(0x330D6464), blurRadius: 24, offset: Offset(0, 6))],
+        ),
+        child: Column(children: [
+          Row(children: [
+            Text(_icon, style: const TextStyle(fontSize: 42)),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(_condition, style: GoogleFonts.plusJakartaSans(
+                fontSize: 20, fontWeight: FontWeight.w800, color: Colors.white)),
+              Text(_warning, style: GoogleFonts.dmSans(
+                fontSize: 12, color: Colors.white.withValues(alpha: 0.85))),
+            ])),
+            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              Text('$_tempC°C', style: const TextStyle(
+                fontSize: 32, fontWeight: FontWeight.w300, color: Colors.white)),
+              Text('Feels like $_feelsLike°', style: TextStyle(
+                fontSize: 11, color: teal, fontWeight: FontWeight.w600)),
+            ]),
+          ]),
+          const SizedBox(height: 14),
+          Row(children: [
+            Expanded(child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: teal, borderRadius: BorderRadius.circular(12)),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const Icon(Icons.map, size: 15, color: Colors.white),
+                  const SizedBox(width: 6),
+                  Text('View Map', style: GoogleFonts.plusJakartaSans(
+                    fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
+                ]),
+              ),
+            )),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+              ),
+              child: Text('Details', style: GoogleFonts.dmSans(
+                fontSize: 13, color: Colors.white)),
+            ),
+          ]),
+        ]),
+      ),
+      const SizedBox(height: 12),
+      // ── Forecast strip ────────────────────────────────────
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: context.lt.border),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Row(
+            children: List.generate(_days.length, (i) {
+              final (label, icon, temp, risk) = _days[i];
+              final isActive = i == _selectedDay;
+              final isLast   = i == _days.length - 1;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _selectedDay = i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? AppColors.teal.withValues(alpha: 0.12)
+                          : context.lt.card,
+                      border: isLast ? null : Border(
+                        right: BorderSide(color: context.lt.border)),
+                    ),
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Text(label, style: TextStyle(
+                        fontSize: 9, fontWeight: FontWeight.w700,
+                        color: isActive ? AppColors.primaryTeal(context.isDark) : context.lt.text2,
+                        letterSpacing: 0.5)),
+                      const SizedBox(height: 4),
+                      Text(icon, style: const TextStyle(fontSize: 18)),
+                      const SizedBox(height: 4),
+                      Text('$temp°', style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w700,
+                        color: context.lt.text)),
+                      const SizedBox(height: 2),
+                      Text(_riskLabel(risk), style: TextStyle(
+                        fontSize: 9, fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3, color: _riskColor(risk))),
+                    ]),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  String _riskLabel(_RiskLevel r) {
+    switch (r) {
+      case _RiskLevel.high: return 'HIGH';
+      case _RiskLevel.med:  return 'MED';
+      case _RiskLevel.low:  return 'LOW';
+      case _RiskLevel.safe: return 'SAFE';
+    }
+  }
+
+  Color _riskColor(_RiskLevel r) {
+    switch (r) {
+      case _RiskLevel.high: return AppColors.red;
+      case _RiskLevel.med:  return AppColors.yellow;
+      case _RiskLevel.low:  return AppColors.green;
+      case _RiskLevel.safe: return AppColors.green;
+    }
+  }
+}
