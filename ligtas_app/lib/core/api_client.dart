@@ -22,9 +22,9 @@ class ApiClient {
   /// For real physical devices, use your machine's LAN IP instead.
   static String get baseUrl {
     if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:5000';
+      return 'http://192.168.1.140:5000';
     }
-    return 'http://localhost:5000';
+    return 'http://192.168.1.140:5000';
   }
 
   Uri _uri(String path) => Uri.parse('$baseUrl$path');
@@ -919,6 +919,39 @@ class ApiClient {
       final decoded = jsonDecode(resp.body);
       if (resp.statusCode != 200) {
         throw Exception(decoded['message'] ?? 'Password change failed');
+      }
+
+      return decoded;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Change user email (requires current password verification).
+  /// Calls POST /api/auth/change-email
+  Future<Map<String, dynamic>> changeEmail({
+    required String currentPassword,
+    required String newEmail,
+    String? token,
+  }) async {
+    try {
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      };
+
+      final resp = await http.post(
+        _uri('/api/auth/change-email'),
+        headers: headers,
+        body: jsonEncode({
+          'current_password': currentPassword,
+          'new_email':        newEmail,
+        }),
+      );
+
+      final decoded = jsonDecode(resp.body);
+      if (resp.statusCode != 200) {
+        throw Exception(decoded['message'] ?? 'Email change failed');
       }
 
       return decoded;
